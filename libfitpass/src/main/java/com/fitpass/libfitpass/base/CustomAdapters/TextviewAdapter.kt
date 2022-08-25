@@ -1,0 +1,62 @@
+package com.fitpass.libfitpass.base.CustomAdapters
+
+import android.util.Log
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import com.fitpass.libfitpass.base.utilities.Util
+import com.fitpass.libfitpass.fontcomponent.FontAwesome
+
+@BindingAdapter("concatvalue","value")
+fun setConcatTextValue(textView: TextView?, concatvalue:String?,value:String?)
+{
+    if(!value.isNullOrEmpty()) {
+        textView!!.setText(concatvalue+value)
+    }else{
+        textView!!.setText("")
+    }
+
+}
+
+@BindingAdapter("mildate")
+fun setmildate(textView: TextView?, date:Int?)
+{
+    if(date!=null){
+        textView!!.setText(Util.convertMiliesToDD_MM_HH_MMDateTime2(date.toString(),true))
+    }
+
+}
+
+@BindingAdapter("textdata")
+fun setTextData(textView: TextView?,value:String?)
+{
+    if(value!=null) {
+        textView!!.setText(value)
+    }else{
+        textView!!.setText("")
+    }
+
+}
+@BindingAdapter("textvalue","defaultvalue","concatvalue1")
+fun setTextData(textView: TextView?,value:String?,default: String,concatvalue1: String)
+{
+    if(!value.isNullOrEmpty()) {
+        if(!value.equals("0")){
+            textView!!.setText(value+concatvalue1)
+        }else{
+            textView!!.setText(default+concatvalue1)
+        }
+    }else{
+        textView!!.setText(default+concatvalue1)
+    }
+
+}
+@BindingAdapter("captextdata")
+fun setcapTextData(textView: TextView?,value:String?)
+{
+    if(value!=null) {
+        textView!!.setText(Util.captalizeString(value))
+    }else{
+        textView!!.setText("")
+    }
+
+}

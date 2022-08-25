@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="libfitpass/src/main/res/drawable/blue2_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/blue3_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/blue4_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/custom_progressbar_layout.xml" value="0.134" />
+        <entry key="libfitpass/src/main/res/drawable/gray_border.xml" value="0.122" />
+        <entry key="libfitpass/src/main/res/drawable/gray_border2.xml" value="0.124" />
+        <entry key="libfitpass/src/main/res/drawable/gray_circle.xml" value="0.1" />
+        <entry key="libfitpass/src/main/res/drawable/gray_react.xml" value="0.1" />
+        <entry key="libfitpass/src/main/res/drawable/green_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/magenta_circle.xml" value="0.1" />
+        <entry key="libfitpass/src/main/res/drawable/megenta_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/red_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/round_bg_white.xml" value="0.134" />
+        <entry key="libfitpass/src/main/res/drawable/scan_layout_back.xml" value="0.122" />
+        <entry key="libfitpass/src/main/res/drawable/white_shape.xml" value="0.1" />
+        <entry key="libfitpass/src/main/res/drawable/white_shape2.xml" value="0.122" />
+        <entry key="libfitpass/src/main/res/drawable/workout_grad.xml" value="0.1" />
+        <entry key="libfitpass/src/main/res/layout/activity_fit_pass_dashboard.xml" value="0.25" />
+        <entry key="libfitpass/src/main/res/layout/activity_fitpass_web_view.xml" value="0.25" />
+        <entry key="libfitpass/src/main/res/layout/custom_progressbar_layout.xml" value="0.19021739130434784" />
+        <entry key="libfitpass/src/main/res/layout/error_footer_layout.xml" value="0.16032608695652173" />
+        <entry key="libfitpass/src/main/res/layout/faq_row.xml" value="0.3888888888888889" />
+        <entry key="libfitpass/src/main/res/layout/fragment_home.xml" value="0.16032608695652173" />
+        <entry key="libfitpass/src/main/res/layout/macro_row.xml" value="0.3141070187630299" />
+        <entry key="libfitpass/src/main/res/layout/menu_row.xml" value="0.22" />
+        <entry key="libfitpass/src/main/res/layout/success_footer_layout.xml" value="0.16032608695652173" />
+        <entry key="libfitpass/src/main/res/layout/upcomming_image_row.xml" value="0.19021739130434784" />
+        <entry key="libfitpass/src/main/res/layout/upcomming_macros.xml" value="0.25" />
+        <entry key="libfitpass/src/main/res/layout/upcomming_update_detail_row.xml" value="0.19021739130434784" />
+        <entry key="libfitpass/src/main/res/layout/upcomming_workout_row.xml" value="0.25" />
+        <entry key="libfitpass/src/main/res/layout/video_upcoming_row.xml" value="0.18164967562557924" />
+        <entry key="libfitpass/src/main/res/layout/workout_row.xml" value="0.33" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

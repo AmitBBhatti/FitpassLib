@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.graphics.Color" />
+        <import type="com.fitpass.libfitpass.base.constants.FontIconConstant" />
+        <import type="com.fitpass.libfitpass.base.utilities.Util" />
+        <variable
+            name="homeData"
+            type="com.fitpass.libfitpass.home.viewmodel.HomeViewModel" />
+
+        <variable
+            name="upcommingdata"
+            type="com.fitpass.libfitpass.home.models.SliderActivity" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rvCard2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="10dp"
+            app:cardUseCompatPadding="true"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/white_shape2"
+                    >
+                    <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16dp"
+                        android:alpha="80"
+                        android:background="@drawable/white_shape2"/>
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/bluegrey"
+                        android:layout_marginHorizontal="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10dp"
+                        android:fontFamily="@font/spf_pro_display_bold"
+                        android:textColor="@color/black2"
+                        android:text="12"/>
+
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</layout>

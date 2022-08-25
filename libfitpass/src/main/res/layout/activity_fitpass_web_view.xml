@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.fitpass.libfitpass.base.constants.FontIconConstant" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/magenta"
+                android:fontFamily="@font/spf_pro_display_bold"
+                android:gravity="center"
+                android:letterSpacing="0.15"
+                android:padding="18dp"
+                android:text="Fitpass"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+            <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                android:id="@+id/tvBack"
+                intfonticon="@{FontIconConstant.INSTANCE.ARROW_BACK_ICON}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"/>
+
+        </RelativeLayout>
+         <WebView
+             android:id="@+id/webview"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             />
+    </LinearLayout>
+</layout>

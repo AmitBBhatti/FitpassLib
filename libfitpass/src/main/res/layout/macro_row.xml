@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.graphics.Color" />
+        <import type="com.fitpass.libfitpass.base.utilities.Util" />
+        <variable
+            name="macrodata"
+            type="com.fitpass.libfitpass.home.models.MacrosDetail" />
+    </data>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingRight="30dp"
+    android:paddingTop="7dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Protein"
+        captextdata="@{macrodata.label}"
+        android:textSize="10dp"
+        android:textColor='@{Color.parseColor(Util.INSTANCE.concatString(macrodata.color,"#"))}'
+        android:fontFamily="@font/spf_pro_display_bold"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="00"
+            textvalue="@{macrodata.taken}"
+            defaultvalue='@{"00"}'
+            concatvalue1='@{"/"}'
+            android:textSize="12dp"
+            android:textColor="@color/black2"
+            android:fontFamily="@font/spf_pro_display_bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="/00g"
+            android:textSize="12dp"
+            textvalue="@{macrodata.given}"
+            defaultvalue='@{"00"}'
+            concatvalue1="@{macrodata.unit}"
+            android:textColor="@color/bluegrey"
+            android:fontFamily="@font/spf_prodisplay_regular"/>
+
+    </LinearLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="50dp"
+        android:layout_height="2dp"
+        app:cardBackgroundColor='@{Color.parseColor(Util.INSTANCE.concatString(macrodata.color,"#"))}'
+        app:cardCornerRadius="3dp"
+        android:layout_marginTop="4dp"/>
+
+</LinearLayout>
+</layout>

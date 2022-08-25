@@ -1,0 +1,23 @@
+<resources>
+    <string name="scannow">Scan now</string>
+    <string name="reserverworkout">Reserve your workouts</string>
+    <string name="reserverworkoutmsg">Explore gyms and studios near you and Get. Set. Sweat.</string>
+    <string name="fircoach">FitCoach</string>
+    <string name="fircoachmsg">A.I led smart fitness coach that adapts to your needs</string>
+    <string name="logameal">Log a meal</string>
+    <string name="logamealmsg">Track your calorie intake</string>
+    <string name="chatwithnut">Chat With Nutritionist</string>
+    <string name="chatwithnutmsg">Clear your doubts and queries</string>
+    <string name="scheduleacall">Schedule A Call</string>
+    <string name="scheduleacallmsg">Speak with our certified nutritionists</string>
+    <string name="fitpasstv">FITPASS-TV</string>
+    <string name="fitpasstvmsg">Go live from Home with your favorite trainers working out from their homes</string>
+    <string name="freqaskquest">Frequently Asked Questions</string>
+    <string name="open_chat_box"><u>Open chat</u></string>
+    <string name="try_now"><u>Try again</u></string>
+    <string name="scanqrcode">Scan QR CODE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

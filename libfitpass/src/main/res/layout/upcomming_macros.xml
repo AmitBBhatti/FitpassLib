@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.fitpass.libfitpass.base.utilities.Util" />
+        <variable
+            name="homeData"
+            type="com.fitpass.libfitpass.home.viewmodel.HomeViewModel" />
+        <variable
+            name="macrodata"
+            type="com.fitpass.libfitpass.home.models.SliderActivity" />
+    </data>
+    <RelativeLayout
+        android:id="@+id/rlDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="10dp"
+            app:cardUseCompatPadding="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="110.5dp"
+                    android:layout_height="110.5dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <com.fitpass.libfitpass.base.circularprogress.CircularProgressIndicator
+                        android:id="@+id/progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        app:direction="clockwise"
+                        app:progressBackgroundColor="@color/lightpink"
+                        app:progressColor="@color/pink"
+                        app:progressStrokeWidth="5dp"
+
+                        app:textColor="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                            android:id="@+id/tvCalIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17dp"
+                            android:textColor="@color/pink" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/spf_pro_display_bold"
+                            tools:text="000/"
+                            textvalue="@{macrodata.today_calorie_taken.taken}"
+                            defaultvalue='@{"00"}'
+                            concatvalue1='@{"/"}'
+                            android:textColor="@color/black2"
+                            android:textSize="14sp"
+                            android:layout_marginTop="5dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/spf_prodisplay_regular"
+                            tools:text="1620 Cal"
+                            textvalue="@{macrodata.today_calorie_taken.given}"
+                            defaultvalue='@{"00"}'
+                            concatvalue1="@{macrodata.today_calorie_taken.unit}"
+                            android:textColor="@color/bluegrey"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/spf_pro_display_bold"
+                        textdata="@{macrodata.label}"
+                        android:textColor="@color/black2"
+                        android:textSize="16sp"
+                        tools:text="Today"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvMacro"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="120dp"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            tools:listitem="@layout/macro_row"
+                            macroItems="@{homeData.macroList}"
+                            macroViewmodel="@{homeData.homeViewModel}"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/grey2"
+                    android:paddingHorizontal="10dp"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/spf_prodisplay_regular"
+                        textdata="@{macrodata.text_message}"
+                        android:textColor="@color/black2"
+                        android:textSize="11sp"
+                        android:layout_marginRight="30dp"/>
+
+                    <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                        android:id="@+id/tvArrow"
+                        android:layout_width="11dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/black2" />
+
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</layout>

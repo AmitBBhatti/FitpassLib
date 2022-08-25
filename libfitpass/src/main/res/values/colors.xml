@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="start_workout_color">#635ace</color>
+    <color name="center_workout_color">#5770df</color>
+    <color name="end_workout_color">#5989ec</color>
+    <color name="white">#FFFFFF</color>
+    <color name="purple1">#615ed1</color>
+    <color name="black1">#091f35</color>
+    <color name="black2">#0b1f34</color>
+
+    <color name="grey1">#839ab2</color>
+    <color name="grey2">#eef0f2</color>
+    <color name="grey3">#e5e5e5</color>
+
+    <color name="green">#51d071</color>
+    <color name="magenta">#625986</color>
+
+    <color name="bluegrey">#627596</color>
+    <color name="blue">#004fb5</color>
+    <color name="blue2">#92b7ff</color>
+    <color name="blue3">#0099dd</color>
+    <color name="blue4">#30297f</color>
+
+    <color name="red">#f26f6e</color>
+    <color name="pink">#f873b4</color>
+    <color name="lightpink">#ffebf5</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="watermelon_two">#ef4c4f</color>
+    <color name="transparent2">#dfdedf</color>
+    <color name="color_scan_start">#d92a5c</color>
+    <color name="color_scan_end">#a7008f</color>
+</resources>
