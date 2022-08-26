@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ScanQrCode.FitpassScanQrCodeActivity">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/transparent"
+            android:orientation="vertical">
+            <com.journeyapps.barcodescanner.DecoratedBarcodeView
+                android:id="@+id/barcodeScanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:zxing_preview_scaling_strategy="fitXY"
+                app:zxing_scanner_layout="@layout/custom_barcode_scanner"
+                app:zxing_use_texture_view="false" />
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="150dp"
+                android:background="@drawable/gray_radius"
+                android:fontFamily="@font/spf_prodisplay_regular"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:text="@string/showqrcode"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+
+
+        </FrameLayout>
+
+    </RelativeLayout>
+</layout>

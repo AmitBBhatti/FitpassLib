@@ -3,6 +3,7 @@ package com.fitpass.libfitpass.base.utilities
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.widget.TextView
 import com.fitpass.libfitpass.fontcomponent.FontAwesome
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -51,5 +52,8 @@ object Util {
     }
     fun concatString(str: String,cancatvalue:String):String{
         return cancatvalue+str
+    }
+    fun setFantIcon(textView: FontAwesome, image: Int) {
+        textView.text = image.toChar().toString()
     }
 }

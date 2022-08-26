@@ -1,7 +1,9 @@
 package com.fitpass.libfitpass.base.CustomAdapters
 
 import android.util.Log
+import android.view.View
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.fontcomponent.FontAwesome

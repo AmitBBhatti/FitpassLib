@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager.widget.ViewPager
 import com.fitpass.libfitpass.R
+import com.fitpass.libfitpass.ScanQrCode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.dataencription.RandomKeyGenrator
 import com.fitpass.libfitpass.base.http_client.CustomLoader
@@ -37,7 +38,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeViewModel(val commonRepository: CommonRepository, val context: Context, val activity: Activity, val vpUpcomming: ViewPager, val llDots: LinearLayout):ViewModel(), HandleResponseListeners {
+class HomeViewModel(
+    val commonRepository: CommonRepository,
+    val context: Context,
+    val activity: Activity,
+    val vpUpcomming: ViewPager,
+    val llDots: LinearLayout
+) : ViewModel(), HandleResponseListeners {
     var homeresponse = MutableLiveData<HomeResponse>()
     var productList = MutableLiveData<ArrayList<Product>>()
     var faqList = MutableLiveData<ArrayList<List>>()
@@ -45,10 +52,14 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
     var macroList = MutableLiveData<ArrayList<MacrosDetail>>()
     private var handleResponseListeners: HandleResponseListeners? = null
     var homeViewModel: HomeViewModel? = null
+     var isScanQrCode=MutableLiveData<Boolean>()
+
     init {
+        isScanQrCode.value=false
         homeViewModel = this
         handleResponseListeners = this@HomeViewModel
     }
+
     fun getHomeData(requestBody: JSONObject) {
 
         viewModelScope.launch(Dispatchers.Main)
@@ -57,7 +68,6 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
             val EncryptBodyKey = RandomKeyGenrator.getAlphaNumericString(16)
             RandomKeyGenrator.setRandomKey(EncryptBodyKey)
             val encryptedData = RandomKeyGenrator.encrptBodydata(requestBody.toString())
-
             withContext(Dispatchers.Main)
             {
                 CustomLoader.showLoaderDialog(activity, context)
@@ -78,34 +88,33 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
     override fun handleSuccess(response1: Response<JsonObject?>, api: String?) {
         val jsonObject = JSONObject(response1!!.body().toString())
         Log.d("homeResponse", jsonObject.toString())
-        var gson=Gson()
-        var response:HomeResponse=gson.fromJson(jsonObject.toString(),HomeResponse::class.java)
+        var gson = Gson()
+        var response: HomeResponse = gson.fromJson(jsonObject.toString(), HomeResponse::class.java)
         viewModelScope.launch {
-            homeresponse.value=response
-            if(response.results.slider_activity!=null){
-                val slideractivitylist= ArrayList<SliderActivity>()
-                for(data in response.results.slider_activity){
-                    if(data.action.equals(ConfigConstants.WORKOUT_ACTION)){
+            homeresponse.value = response
+            if (response.results.slider_activity != null) {
+                val slideractivitylist = ArrayList<SliderActivity>()
+                for (data in response.results.slider_activity) {
+                    if (data.action.equals(ConfigConstants.WORKOUT_ACTION)) {
+                        isScanQrCode.value=true
                         slideractivitylist.add(data)
-                    }else if(data.action.equals(ConfigConstants.NOTICE_ACTION)){
+                    } else if (data.action.equals(ConfigConstants.NOTICE_ACTION)) {
                         slideractivitylist.add(data)
-                    }else if(data.action.equals(ConfigConstants.MEAL_LOG_ACTION)){
+                    } else if (data.action.equals(ConfigConstants.MEAL_LOG_ACTION)) {
                         slideractivitylist.add(data)
-                        macroList.value=data.macros_details
+                        macroList.value = data.macros_details
                     }
                 }
-                sliderList.value=slideractivitylist
-
+                sliderList.value = slideractivitylist
                 setupPagerIndidcatorDots(0)
                 setViewPagerListener()
             }
-            if(response.results.product_list!=null){
-                productList.value=response.results.product_list
+            if (response.results.product_list != null) {
+                productList.value = response.results.product_list
             }
-            if(response.results.faq.list!=null){
-                faqList.value=response.results.faq.list
+            if (response.results.faq.list != null) {
+                faqList.value = response.results.faq.list
             }
-            //Log.d("macroList",macroList.value!!.size.toString()+"..")
             CustomLoader.hideLoaderDialog(activity)
         }
     }
@@ -117,11 +126,17 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
 
     fun setViewPagerListener() {
 
-       vpUpcomming.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        vpUpcomming.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
+
             override fun onPageSelected(position: Int) {
 
                 setupPagerIndidcatorDots(position)
@@ -129,8 +144,8 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
         })
         setupPagerIndidcatorDots(0)
     }
-    private fun setupPagerIndidcatorDots(selectedPos:Int)
-    {
+
+    private fun setupPagerIndidcatorDots(selectedPos: Int) {
         llDots.removeAllViews()
         var density = context.getResources().getDisplayMetrics().density.toFloat()
         var paddingPixel10 = (4 * density).toInt();
@@ -146,10 +161,10 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
                 paddingPixel46, paddingPixel10
             )
             params2.setMargins(paddingPixel5, 0, paddingPixel5, 0)
-            if(i==selectedPos){
+            if (i == selectedPos) {
                 imageView.layoutParams = params2
                 imageView.setBackground(context.getResources().getDrawable(R.drawable.gray_react))
-            }else{
+            } else {
                 imageView.layoutParams = params1
                 imageView.setBackground(context.getResources().getDrawable(R.drawable.gray_circle))
             }
@@ -157,12 +172,19 @@ class HomeViewModel(val commonRepository: CommonRepository, val context: Context
             //binding.llDots.bringToFront()
         }
     }
-    fun upCommingActions(action:String,url:String){
-        if(action.equals(ConfigConstants.MEAL_LOG_ACTION)){
-            var intent= Intent(context, FitpassWebViewActivity::class.java)
-            intent.putExtra("url",url)
+
+    fun upCommingActions(action: String, url: String) {
+        if (action.equals(ConfigConstants.MEAL_LOG_ACTION)) {
+            var intent = Intent(context, FitpassWebViewActivity::class.java)
+            intent.putExtra("url", url)
             context.startActivity(intent)
         }
 
     }
+
+    fun openScanActivity() {
+        var intent = Intent(context, FitpassScanQrCodeActivity::class.java)
+        context.startActivity(intent)
+    }
+
 }

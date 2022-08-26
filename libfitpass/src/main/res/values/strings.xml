@@ -16,6 +16,10 @@
     <string name="open_chat_box"><u>Open chat</u></string>
     <string name="try_now"><u>Try again</u></string>
     <string name="scanqrcode">Scan QR CODE</string>
+    <string name="flash">Flash</string>
+    <string name="scanfromgallery">Scan from \ngallery</string>
+    <string name="refreshlocation">Refresh \nlocation</string>
+    <string name="showqrcode">Show your QR code</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
