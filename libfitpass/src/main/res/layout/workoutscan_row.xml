@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.graphics.Color" />
+        <import type="com.fitpass.libfitpass.base.constants.FontIconConstant" />
+        <import type="com.fitpass.libfitpass.base.utilities.Util" />
+        <variable
+            name="scandata"
+            type="com.fitpass.libfitpass.scanqrcode.models.Workout" />
+
+    </data>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="10dp">
+        <RelativeLayout
+            android:id="@+id/rlIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp">
+            <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                android:id="@+id/faIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="27dp"
+                android:textColor="@color/white"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="125dp"
+            android:layout_toRightOf="@+id/rlIcon"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/spf_pro_display_bold"
+                android:includeFontPadding="false"
+                android:textColor="@color/black1"
+                android:textSize="14sp"
+                tools:text="Workout"
+                textdata="@{scandata.workout_name}"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/spf_prodisplay_regular"
+                android:includeFontPadding="false"
+                android:textColor="@color/black1"
+                android:textSize="10sp"
+                tools:text="12-12-12"
+                date="@{scandata.start_time}"
+                outputformat='@{"dd MMM, hh:mm aa"}'/>
+            <TextView
+                android:id="@+id/tvWorkoutSuccess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/spf_prodisplay_regular"
+                android:includeFontPadding="false"
+                android:textColor="@color/green"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:text="Workout attended successfully at: 5:30 pm" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llScanHelp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/llScan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black1"
+                    android:textSize="32dp"
+                    intfonticon="@{FontIconConstant.INSTANCE.SCAN_ICON}"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2.5dp"
+                    android:fontFamily="@font/sf_pro_display_semi_bold"
+                    android:includeFontPadding="false"
+                    android:text="@string/scannow"
+                    android:textColor="@color/black1"
+                    android:textSize="10sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                    <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/bluegrey"
+                        intfonticon="@{FontIconConstant.INSTANCE.HELP_ICON}"
+                        android:textSize="24dp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/sf_pro_display_semi_bold"
+                    android:includeFontPadding="false"
+                    android:text="@string/needhelp"
+                    android:textColor="@color/black1"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey4"/>
+</LinearLayout>
+</layout>

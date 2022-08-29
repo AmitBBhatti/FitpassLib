@@ -23,7 +23,21 @@ fun setConcatTextValue(textView: TextView?, concatvalue:String?,value:String?)
 fun setmildate(textView: TextView?, date:Int?)
 {
     if(date!=null){
-        textView!!.setText(Util.convertMiliesToDD_MM_HH_MMDateTime2(date.toString(),true))
+        if(date!=0) {
+            textView!!.setText(Util.convertMiliesToDD_MM_HH_MMDateTime2(date.toString(), true))
+        }
+    }
+
+}
+@BindingAdapter("date","outputformat")
+fun setdate(textView: TextView?, date:Int?,outputformat:String)
+{
+    if(date!=null){
+        if(date!=0){
+            textView!!.setText(Util.convertMiliesToDate(date.toString(),true,outputformat))
+        }
+
+
     }
 
 }

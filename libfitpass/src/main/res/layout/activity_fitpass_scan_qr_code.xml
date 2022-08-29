@@ -2,11 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="scanviewmodel"
+            type="com.fitpass.libfitpass.scanqrcode.viewmodel.ScanViewModel" />
+    </data>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ScanQrCode.FitpassScanQrCodeActivity">
+        tools:context=".scanqrcode.FitpassScanQrCodeActivity">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -20,12 +25,12 @@
                 app:zxing_preview_scaling_strategy="fitXY"
                 app:zxing_scanner_layout="@layout/custom_barcode_scanner"
                 app:zxing_use_texture_view="false" />
-
             <TextView
+                android:id="@+id/tvShowQrCode"
                 android:layout_width="150dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="150dp"
+                android:layout_marginTop="135dp"
                 android:background="@drawable/gray_radius"
                 android:fontFamily="@font/spf_prodisplay_regular"
                 android:gravity="center"
@@ -35,10 +40,67 @@
                 android:text="@string/showqrcode"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone"/>
+
 
 
         </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gray_bg"
+                android:orientation="vertical"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="@font/spf_prodisplay_regular"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/black1"
+                    android:textSize="12sp"
+                    android:text="Your reservations" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="2.5dp"
+                    android:fontFamily="@font/spf_pro_display_bold"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/black1"
+                    android:textSize="19sp"
+                    textdata="@{scanviewmodel.scanWorkOutResults.studio_name}"
+                    tools:text="Gold’s Gym Malviya nagar " />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="vertical"
+                tools:itemCount="2"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+                tools:listitem="@layout/workoutscan_row"
+                scanItems="@{scanviewmodel.scanWorkoutList}"
+                scanViewmodel="@{scanviewmodel.scanViewModel}"
+                fitpassScanListener="@{scanviewmodel.fitpassScanListener}"
+                />
+
+
+        </LinearLayout>
 
     </RelativeLayout>
 </layout>

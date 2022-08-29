@@ -8,5 +8,6 @@ import retrofit2.http.POST
 interface ApiInterface {
     @POST(ApiConstants.HOME_API)
     suspend fun getHomeDataApi(@Body request: String?): Response<JsonObject?>?
-
+    @POST(ApiConstants.SCANQRCODE_API)
+    suspend fun getScanDataApi(@Body request: String?): Response<JsonObject?>?
 }

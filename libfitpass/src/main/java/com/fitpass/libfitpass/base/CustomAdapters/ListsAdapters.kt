@@ -1,12 +1,14 @@
 package com.fitpass.libfitpass.base.CustomAdapters
 
-import android.util.Log
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.fitpass.libfitpass.scanqrcode.Adapers.FitpassScanListAdapter
+import com.fitpass.libfitpass.scanqrcode.models.Workout
+import com.fitpass.libfitpass.scanqrcode.viewmodel.ScanViewModel
 import com.fitpass.libfitpass.home.adapters.FaqAdapter
 import com.fitpass.libfitpass.home.adapters.Macro_Adapter
 import com.fitpass.libfitpass.home.adapters.MenuAdapter
@@ -16,6 +18,7 @@ import com.fitpass.libfitpass.home.models.MacrosDetail
 import com.fitpass.libfitpass.home.models.Product
 import com.fitpass.libfitpass.home.models.SliderActivity
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
+import com.fitpass.libfitpass.scanqrcode.listeners.FitpassScanListener
 
 
 @BindingAdapter("menuItems","menuViewModel")
@@ -89,6 +92,25 @@ private fun getMaroItemsAdapter(recyclerView: RecyclerView, homeViewModel: HomeV
     } else {
         val bindableRecyclerAdapter = Macro_Adapter(homeViewModel)
         recyclerView.layoutManager=  GridLayoutManager(recyclerView.context,2)
+        recyclerView.adapter = bindableRecyclerAdapter
+        bindableRecyclerAdapter
+    }
+}
+
+@BindingAdapter("scanItems","scanViewmodel","fitpassScanListener")
+fun bindScanItemsActivity(recyclerView: RecyclerView, list: MutableLiveData<ArrayList<Workout>>?, scanViewModel: ScanViewModel, fitpassScanListener: FitpassScanListener) {
+    val adapter = getScanItemsAdapter(recyclerView,scanViewModel,fitpassScanListener)
+    if (list!=null&&list!!.value!=null)
+    {
+        adapter.updateItems(list)
+    }
+}
+private fun getScanItemsAdapter(recyclerView: RecyclerView, scanViewModel: ScanViewModel, fitpassScanListener:FitpassScanListener): FitpassScanListAdapter {
+    return if (recyclerView.adapter != null) {
+        recyclerView.adapter as FitpassScanListAdapter
+    } else {
+        val bindableRecyclerAdapter = FitpassScanListAdapter(scanViewModel,fitpassScanListener)
+        recyclerView.layoutManager= LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = bindableRecyclerAdapter
         bindableRecyclerAdapter
     }

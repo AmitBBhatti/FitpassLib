@@ -3,11 +3,15 @@ package com.fitpass.libfitpass.base.utilities
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.widget.TextView
+import android.util.Log
+import com.fitpass.libfitpass.base.constants.ConfigConstants
+import com.fitpass.libfitpass.base.dataencription.CryptLib
 import com.fitpass.libfitpass.fontcomponent.FontAwesome
+import java.security.NoSuchAlgorithmException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.crypto.NoSuchPaddingException
 
 
 object Util {
@@ -23,15 +27,40 @@ object Util {
         return shape
     }
 
-    fun convertMiliesToDD_MM_HH_MMDateTime2(
-        milies: String,
-        isMiliConversionRequired: Boolean
-    ): String? {
+    fun drawRectRadious(backgroundColor: String): GradientDrawable? {
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.RECTANGLE
+        shape.cornerRadii = floatArrayOf(10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f)
+        shape.setColor(Color.parseColor(backgroundColor))
+        return shape
+    }
+
+    fun convertMiliesToDD_MM_HH_MMDateTime2(milies: String, isMiliConversionRequired: Boolean): String? {
         var formatter: DateFormat? = null
         formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             SimpleDateFormat("dd MMM, yyyy hh:mm aa")
         } else {
             SimpleDateFormat("dd MMM, yyyy  hh:mm aa")
+        }
+        val milliSeconds = milies.toLong()
+        println(milliSeconds)
+        val calendar = Calendar.getInstance()
+        if (isMiliConversionRequired) {
+            calendar.timeInMillis = milliSeconds * 1000
+        } else {
+            calendar.timeInMillis = milliSeconds
+        }
+        val endDate = formatter.format(calendar.time)
+        println(endDate)
+        val amToAm = endDate.replace("am", "AM")
+        return amToAm.replace("pm", "PM")
+    }
+    fun convertMiliesToDate(milies: String, isMiliConversionRequired: Boolean,outputfarmat:String): String? {
+        var formatter: DateFormat? = null
+        formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            SimpleDateFormat(outputfarmat)
+        } else {
+            SimpleDateFormat(outputfarmat)
         }
         val milliSeconds = milies.toLong()
         println(milliSeconds)
@@ -55,5 +84,26 @@ object Util {
     }
     fun setFantIcon(textView: FontAwesome, image: Int) {
         textView.text = image.toChar().toString()
+    }
+
+    fun encrptdata(data: String?): String? {
+        Log.e("encrptdata Metod Log", data!!)
+        var encrptData = ""
+        try {
+            val cryptLib = CryptLib()
+            encrptData = cryptLib.encryptPlainTextWithRandomIV(
+                data,
+                ConfigConstants.OLD_PAYLOAD_ENCRYPTION_KEY
+            )
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            encrptData = e.message.toString()
+        } catch (e: NoSuchPaddingException) {
+            e.printStackTrace()
+            encrptData = e.message.toString()
+        } catch (e: Exception) {
+            encrptData = e.localizedMessage
+        }
+        return encrptData
     }
 }

@@ -22,6 +22,7 @@ class CustomToastView {
     {
         var dialog: Dialog? = null
         fun successToasMessage(activity: Activity, context: Context?, message: String?): Dialog? {
+
             if (dialog == null || dialog != null && !dialog!!.isShowing() && !activity.isFinishing) {
                 dialog = Dialog(activity/*, R.style.cb_dialog*/)
                 dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -59,39 +60,42 @@ class CustomToastView {
 
 
         fun errorToasMessage(activity: Activity, context: Context?, message: String?): Dialog? {
-            if (dialog == null || dialog != null && !dialog!!.isShowing() && !activity.isFinishing) {
-                dialog = Dialog(activity/*, R.style.cb_dialog*/)
-                dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog!!.setCancelable(true)
-                dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog!!.setCancelable(true)
-                dialog!!.setContentView(R.layout.error_footer_layout)
-                dialog!!.getWindow()?.setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT
-                )
-                val window: Window? = dialog!!.getWindow()
-                val wlp = window?.attributes
-                wlp!!.gravity = Gravity.BOTTOM
-                wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
-                window!!.attributes = wlp
-                dialog!!.getWindow()?.setBackgroundDrawableResource(R.color.transparent)
-                val image: FontAwesome =
-                    dialog!!.findViewById<View>(R.id.fa_info) as FontAwesome
-                val ll_error_base =
-                    dialog!!.findViewById<View>(R.id.ll_error_base) as LinearLayout
-                val fa_error_cross: FontAwesome =
-                    dialog!!.findViewById<View>(R.id.fa_error_cross) as FontAwesome
-                Util.setimage(fa_error_cross, FontIconConstant.CLOSE_ICON)
-                Util.setimage(image, FontIconConstant.ERROR_ICON)
-                val text =
-                    dialog!!.findViewById<View>(R.id.tv_server_error_message) as TextView
-                text.text = message
-                dialog!!.show()
-                fa_error_cross.setOnClickListener(View.OnClickListener { dialog!!.dismiss() })
-                val handler = Handler()
-                handler.postDelayed({ dialog!!.dismiss() }, 10000)
-            }
+            activity.runOnUiThread(Runnable {
+                if (dialog == null || dialog != null && !dialog!!.isShowing() && !activity.isFinishing) {
+                    dialog = Dialog(activity/*, R.style.cb_dialog*/)
+                    dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog!!.setCancelable(true)
+                    dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                    dialog!!.setCancelable(true)
+                    dialog!!.setContentView(R.layout.error_footer_layout)
+                    dialog!!.getWindow()?.setLayout(
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT
+                    )
+                    val window: Window? = dialog!!.getWindow()
+                    val wlp = window?.attributes
+                    wlp!!.gravity = Gravity.BOTTOM
+                    wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+                    window!!.attributes = wlp
+                    dialog!!.getWindow()?.setBackgroundDrawableResource(R.color.transparent)
+                    val image: FontAwesome =
+                        dialog!!.findViewById<View>(R.id.fa_info) as FontAwesome
+                    val ll_error_base =
+                        dialog!!.findViewById<View>(R.id.ll_error_base) as LinearLayout
+                    val fa_error_cross: FontAwesome =
+                        dialog!!.findViewById<View>(R.id.fa_error_cross) as FontAwesome
+                    Util.setimage(fa_error_cross, FontIconConstant.CLOSE_ICON)
+                    Util.setimage(image, FontIconConstant.ERROR_ICON)
+                    val text =
+                        dialog!!.findViewById<View>(R.id.tv_server_error_message) as TextView
+                    text.text = message
+                    dialog!!.show()
+                    fa_error_cross.setOnClickListener(View.OnClickListener { dialog!!.dismiss() })
+                    val handler = Handler()
+                    handler.postDelayed({ dialog!!.dismiss() }, 10000)
+                }
+
+            })
             return dialog
         }
 

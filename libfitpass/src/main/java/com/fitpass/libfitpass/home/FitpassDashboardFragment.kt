@@ -1,27 +1,32 @@
 package com.fitpass.libfitpass.home
 
-import android.graphics.Color
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager.widget.ViewPager
 import com.fitpass.libfitpass.R
+import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.base.utilities.FitpassConfig
-import com.fitpass.libfitpass.base.utilities.FitpassConfigUtil
 import com.fitpass.libfitpass.databinding.FragmentHomeBinding
-import com.fitpass.libfitpass.home.adapters.FaqAdapter
-import com.fitpass.libfitpass.home.adapters.UpcomingAdapter
 import com.fitpass.libfitpass.home.http_client.CommonRepository
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 import com.fitpass.libfitpass.home.viewmodelfactory.HomeViewModelFactory
 import org.json.JSONObject
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +41,7 @@ private const val ARG_PARAM2 = "param2"
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     private var homeViewModel: HomeViewModel?=null
+    var PERMISSION_CODE:Int=101
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,6 +51,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setPadding()
@@ -61,6 +68,9 @@ class HomeFragment : Fragment() {
             request.put("member_id","15143512435")
             // it.getHomeData(Request("15143512435","11111111113111","183"))
             it.getHomeData(request)
+        }
+        binding.llScan.setOnClickListener {
+            checkPermission()
         }
 
     }
@@ -82,6 +92,72 @@ class HomeFragment : Fragment() {
         binding.rvFaq.setPadding(paddingPixel, 0, paddingPixel, 0);
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun checkPermission() {
+        if (ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED&&ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED&&ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                requireActivity(), arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                PERMISSION_CODE
+            )
+        } else{
+            openScanActivity()
+        }
+
+    }
+    fun openScanActivity() {
+        var intent = Intent(context, FitpassScanQrCodeActivity::class.java)
+        requireActivity().startActivity(intent)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_CODE) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                alert("We need to allow the camera permission to scan the QR Code. Do you want to allow it.")
+            }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                alert("We need to allow the location permission. Do you want to allow it.")
+            }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                alert("We need to allow the location permission. Do you want to allow it.")
+            }
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openScanActivity()
+            } else {
+               checkPermission()
+            }
+        }
+
+    }
+    fun alert(msg:String) {
+        val builder1 = AlertDialog.Builder(requireContext())
+        builder1.setMessage(msg)
+        builder1.setCancelable(false)
+        builder1.setPositiveButton(
+            "Yes"
+        ) { dialog, id ->
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
+        builder1.setNegativeButton(
+            "No"
+        ) { dialog, id -> requireActivity().onBackPressed() }
+        val alert11 = builder1.create()
+        alert11.show()
+    }
 
 
 }

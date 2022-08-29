@@ -4,25 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.view.get
-import androidx.core.view.size
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager.widget.ViewPager
 import com.fitpass.libfitpass.R
-import com.fitpass.libfitpass.ScanQrCode.FitpassScanQrCodeActivity
+import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.dataencription.RandomKeyGenrator
 import com.fitpass.libfitpass.base.http_client.CustomLoader
-import com.fitpass.libfitpass.databinding.UpcommingImageRowBinding
-import com.fitpass.libfitpass.databinding.UpcommingWorkoutRowBinding
-import com.fitpass.libfitpass.home.FitpassDashboard
 import com.fitpass.libfitpass.home.FitpassWebViewActivity
-import com.fitpass.libfitpass.home.adapters.UpcomingAdapter
 import com.fitpass.libfitpass.home.http_client.ApiConstants
 import com.fitpass.libfitpass.home.http_client.CommonRepository
 import com.fitpass.libfitpass.home.http_client.HandleResponseListeners
@@ -186,5 +179,7 @@ class HomeViewModel(
         var intent = Intent(context, FitpassScanQrCodeActivity::class.java)
         context.startActivity(intent)
     }
+
+
 
 }

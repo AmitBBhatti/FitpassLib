@@ -4,5 +4,6 @@ class ApiConstants {
     companion object {
         const val BASET_URL="https://api.fitpass.dev/"
         const val HOME_API="vendors/authenticate"
+        const val SCANQRCODE_API="vendors/scanqrcode"
     }
 }

@@ -17,6 +17,8 @@ public object FontIconConstant {
         val FLASH_ICON = 0xe9ce
         val GALLEY_ICON = 0xea25
         val REFERESH_LOC_ICON = 0xea24
+        val ACTIVE_ICON = 0xea2e
+        val GYM_WORKOUT_ICON = 0xe91f
 
 
 }
