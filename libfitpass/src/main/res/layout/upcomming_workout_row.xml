@@ -12,6 +12,9 @@
         <import type="com.fitpass.libfitpass.base.constants.FontIconConstant" />
 
         <import type="com.fitpass.libfitpass.base.utilities.Util" />
+        <variable
+            name="homeFrag"
+            type="com.fitpass.libfitpass.home.FitpassDashboardFragmentKt" />
 
         <variable
             name="homeData"

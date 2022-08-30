@@ -34,6 +34,12 @@ object Util {
         shape.setColor(Color.parseColor(backgroundColor))
         return shape
     }
+    fun drawGradient(): GradientDrawable? {
+        var gd = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(Color.parseColor("#ef78ba"), Color.parseColor("#da4361")))
+        gd.shape = GradientDrawable.RECTANGLE
+        gd.cornerRadii = floatArrayOf(10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f)
+       return gd
+    }
 
     fun convertMiliesToDD_MM_HH_MMDateTime2(milies: String, isMiliConversionRequired: Boolean): String? {
         var formatter: DateFormat? = null
@@ -106,4 +112,28 @@ object Util {
         }
         return encrptData
     }
+     fun getWorkoutImage(imageId: Int): String {
+         return when (imageId) {
+             1 -> "e901"
+             2 -> "e903"
+             3 -> "e906"
+             4 -> "e90b"
+             5 -> "e90c"
+             6 -> "e90f"
+             7 -> "e91f"
+             8 -> "e921"
+             9 -> "e92b"
+             10 -> "e92f"
+             11 -> "e937"
+             12 -> "e938"
+             13 -> "e939"
+             14 -> "e941"
+             15 -> "e942"//
+             16 -> "e96f"
+             17 -> "e96d"
+             18 -> "e96c"
+             19 -> "e96e"
+             else -> "e91f"
+         }
+     }
 }

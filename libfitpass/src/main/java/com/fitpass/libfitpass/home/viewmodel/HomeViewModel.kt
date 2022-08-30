@@ -19,6 +19,7 @@ import com.fitpass.libfitpass.home.FitpassWebViewActivity
 import com.fitpass.libfitpass.home.http_client.ApiConstants
 import com.fitpass.libfitpass.home.http_client.CommonRepository
 import com.fitpass.libfitpass.home.http_client.HandleResponseListeners
+import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.*
 import com.fitpass.libfitpass.home.models.List
 
@@ -36,7 +37,8 @@ class HomeViewModel(
     val context: Context,
     val activity: Activity,
     val vpUpcomming: ViewPager,
-    val llDots: LinearLayout
+    val llDots: LinearLayout,
+    val fitpassHomeListener: FitpassHomeListener
 ) : ViewModel(), HandleResponseListeners {
     var homeresponse = MutableLiveData<HomeResponse>()
     var productList = MutableLiveData<ArrayList<Product>>()
@@ -168,12 +170,19 @@ class HomeViewModel(
 
     fun upCommingActions(action: String, url: String) {
         if (action.equals(ConfigConstants.MEAL_LOG_ACTION)) {
-            var intent = Intent(context, FitpassWebViewActivity::class.java)
-            intent.putExtra("url", url)
-            context.startActivity(intent)
+            openWebActivity(url)
         }
 
     }
+    fun menuActions(url: String) {
+        openWebActivity(url)
+    }
+    fun openWebActivity(url: String){
+        var intent = Intent(context, FitpassWebViewActivity::class.java)
+        intent.putExtra("url", url)
+        context.startActivity(intent)
+    }
+
 
     fun openScanActivity() {
         var intent = Intent(context, FitpassScanQrCodeActivity::class.java)

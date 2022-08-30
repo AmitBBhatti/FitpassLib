@@ -61,8 +61,20 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     var security_code: String = ""
     var latitude=""
     var longitude=""
-
+    private lateinit var studioLogo:String
+    private lateinit var studioName:String
+    private lateinit var address:String
+    private lateinit var activityId:String
     private var scanViewModel: ScanViewModel?=null
+    var position:Int=0
+    companion object{
+        lateinit var tvStatus:TextView
+        lateinit var llScanHelp:LinearLayout
+        lateinit var rlIcon:RelativeLayout
+        lateinit var faIcon:FontAwesome
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_fitpass_scan_qr_code)
@@ -128,10 +140,13 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             intent.putExtra("user_schedule_id",user_schedule_id)
             intent.putExtra("latitude",latitude)
             intent.putExtra("longitude",longitude)
-            intent.putExtra("longitude",longitude)
             intent.putExtra("workout_name",workout_name)
-            intent.putExtra("start_time",start_time.toString())
-            intent.putExtra("security_code",security_code.toString())
+            intent.putExtra("start_time",start_time)
+            intent.putExtra("security_code",security_code)
+            intent.putExtra("studio_logo",studioLogo)
+            intent.putExtra("studio_name",studioName)
+            intent.putExtra("address",address)
+            intent.putExtra("activity_id",activityId)
             startActivity(intent)
         }
     }
@@ -163,7 +178,9 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         permissions: Array<String?>,
         grantResults: IntArray
     ) {
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d("onRequestResult","onRequestPermissionsResult")
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED
@@ -171,6 +188,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
                 alert()
             }
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("onRequestResult","PERMISSION_GRANTED")
                 capture!!.onResume()
             } else {
             }
@@ -290,16 +308,26 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             request.put("longitude",longitude)
             request.put("user_schedule_id",user_schedule_id)
             Log.d("Api_Request",request.toString())
-            it.getScanData(request)
+            if(user_schedule_id.equals("0")){
+                it.getScanData(request,false)
+            }else{
+                it.getScanData(request,true)
+            }
+
         }
     }
 
-    override fun onScanClick(workout: Workout) {
-
+    override fun onScanClick(workout: Workout,studioName:String,logo:String,address:String,position:Int) {
         user_schedule_id=workout.user_schedule_id
         workout_name=workout.workout_name
         start_time=workout.start_time.toString()
         security_code=workout.security_code.toString()
-        binding.tvShowQrCode.visibility=View.VISIBLE
+        activityId=workout.activity_id.toString()
+        this.studioName=studioName
+        this.studioLogo=logo
+        this.address=address
+        this.position=position
+        binding.llShowQr.visibility=View.VISIBLE
+
     }
 }

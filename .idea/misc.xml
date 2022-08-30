@@ -31,7 +31,7 @@
         <entry key="libfitpass/src/main/res/layout/activity_fit_pass_dashboard.xml" value="0.25" />
         <entry key="libfitpass/src/main/res/layout/activity_fitpass_scan_qr_code.xml" value="0.33" />
         <entry key="libfitpass/src/main/res/layout/activity_fitpass_web_view.xml" value="0.25" />
-        <entry key="libfitpass/src/main/res/layout/activity_show_qr_code.xml" value="0.2" />
+        <entry key="libfitpass/src/main/res/layout/activity_show_qr_code.xml" value="0.33" />
         <entry key="libfitpass/src/main/res/layout/custom_barcode_scanner.xml" value="0.25" />
         <entry key="libfitpass/src/main/res/layout/custom_progressbar_layout.xml" value="0.19021739130434784" />
         <entry key="libfitpass/src/main/res/layout/error_footer_layout.xml" value="0.16032608695652173" />
@@ -47,7 +47,7 @@
         <entry key="libfitpass/src/main/res/layout/upcomming_workout_row.xml" value="0.25" />
         <entry key="libfitpass/src/main/res/layout/video_upcoming_row.xml" value="0.18164967562557924" />
         <entry key="libfitpass/src/main/res/layout/workout_row.xml" value="0.33" />
-        <entry key="libfitpass/src/main/res/layout/workoutscan_row.xml" value="0.25" />
+        <entry key="libfitpass/src/main/res/layout/workoutscan_row.xml" value="0.22" />
       </map>
     </option>
   </component>

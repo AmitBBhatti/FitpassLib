@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.MenuRowBinding
 import com.fitpass.libfitpass.home.models.Product
@@ -42,6 +43,10 @@ class MenuAdapter (val homeViewModel: HomeViewModel): RecyclerView.Adapter<MenuA
             holder.binding.view.visibility=View.VISIBLE
         }
         holder.binding.llDetail.setOnClickListener {
+            if(!list!!.value!!.get(position).redircet_url.isNullOrEmpty()){
+                homeViewModel.menuActions(list!!.value!!.get(position).redircet_url)
+            }
+
         }
 
     }

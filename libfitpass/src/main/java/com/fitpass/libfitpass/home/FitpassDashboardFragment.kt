@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.base.utilities.FitpassConfig
 import com.fitpass.libfitpass.databinding.FragmentHomeBinding
 import com.fitpass.libfitpass.home.http_client.CommonRepository
+import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 import com.fitpass.libfitpass.home.viewmodelfactory.HomeViewModelFactory
 import org.json.JSONObject
@@ -38,7 +40,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), FitpassHomeListener{
     lateinit var binding: FragmentHomeBinding
     private var homeViewModel: HomeViewModel?=null
     var PERMISSION_CODE:Int=101
@@ -50,14 +52,12 @@ class HomeFragment : Fragment() {
         binding=DataBindingUtil.inflate(inflater,R.layout.fragment_home,container,false)
         return binding.root
     }
-
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setPadding()
-
         var commonRepository= CommonRepository(requireContext(),requireActivity())
-        var viewModelFactories=  HomeViewModelFactory(commonRepository,requireContext(),requireActivity(), binding.vpUpcomming, binding.llDots)
+        var viewModelFactories=  HomeViewModelFactory(commonRepository,requireContext(),requireActivity(), binding.vpUpcomming, binding.llDots,this)
         homeViewModel= ViewModelProvider(this,viewModelFactories!!).get(HomeViewModel::class.java)
         binding.lifecycleOwner=viewLifecycleOwner
         binding.homedata=homeViewModel
@@ -75,7 +75,6 @@ class HomeFragment : Fragment() {
 
     }
 
-
     fun setPadding() {
         var fitpassConfig = FitpassConfig.getInstance()
         var paddingDp: Int = fitpassConfig!!.getPadding();
@@ -83,7 +82,6 @@ class HomeFragment : Fragment() {
         var paddingPixel = (paddingDp * density).toInt();
         binding.rlFitpassid.setPadding(paddingPixel, 0, paddingPixel, 0);
         binding.rvMenu.setPadding(paddingPixel, 0, paddingPixel, 0);
-
         var paddingDp1: Int = fitpassConfig!!.getPadding() - 5;
         var paddingPixel1 = (paddingDp1 * density).toInt();
         binding.vpUpcomming.setPadding(paddingPixel1, 0, 0, 0);
@@ -94,7 +92,7 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun checkPermission() {
-        if (ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED&&ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED&&ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
                 requireActivity(), arrayOf(
                     Manifest.permission.CAMERA,
@@ -113,33 +111,7 @@ class HomeFragment : Fragment() {
         requireActivity().startActivity(intent)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_CODE) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED
-            ) {
-                alert("We need to allow the camera permission to scan the QR Code. Do you want to allow it.")
-            }
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_DENIED
-            ) {
-                alert("We need to allow the location permission. Do you want to allow it.")
-            }
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_DENIED
-            ) {
-                alert("We need to allow the location permission. Do you want to allow it.")
-            }
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openScanActivity()
-            } else {
-               checkPermission()
-            }
-        }
 
-    }
     fun alert(msg:String) {
         val builder1 = AlertDialog.Builder(requireContext())
         builder1.setMessage(msg)
@@ -157,6 +129,11 @@ class HomeFragment : Fragment() {
         ) { dialog, id -> requireActivity().onBackPressed() }
         val alert11 = builder1.create()
         alert11.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onScanClick() {
+        checkPermission()
     }
 
 

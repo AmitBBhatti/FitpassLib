@@ -17,11 +17,12 @@ import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.UpcommingImageRowBinding
 import com.fitpass.libfitpass.databinding.UpcommingMacrosBinding
 import com.fitpass.libfitpass.databinding.UpcommingWorkoutRowBinding
+import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.Product
 import com.fitpass.libfitpass.home.models.SliderActivity
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 
-class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel): PagerAdapter() {
+class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel,val fitpassHomeListener: FitpassHomeListener): PagerAdapter() {
     private var layoutInflater: LayoutInflater? = null
     val list=  MutableLiveData<ArrayList<SliderActivity>>()
     override fun getCount(): Int {
@@ -63,12 +64,15 @@ class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel): Pa
                 }else{
                     binding.tvStatus.visibility=View.GONE
                 }
-            }else if(list.value!!.get(position).data.ongoing_workout.equals("1")){
+            }else if(list.value!!.get(position).data.ongoing_workout.equals("1") && !list.value!!.get(position).data.workout_status.equals("1") ){
                 binding.viewCircle.visibility=View.GONE
-                binding.tvStatus.setText("Upcomming Workout")
-            }else{
-                binding.viewCircle.visibility=View.VISIBLE
                 binding.tvStatus.setText("Ongoing workout")
+            }else{
+                binding.viewCircle.visibility=View.GONE
+                binding.tvStatus.setText("")
+            }
+            binding.llScan.setOnClickListener {
+                fitpassHomeListener.onScanClick()
             }
 
             vp.addView(binding.root, 0)

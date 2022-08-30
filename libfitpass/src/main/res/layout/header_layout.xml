@@ -5,9 +5,19 @@
         <import type="com.fitpass.libfitpass.base.constants.FontIconConstant" />
     </data>
     <RelativeLayout
+        android:id="@+id/rlHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp">
+        <com.fitpass.libfitpass.fontcomponent.FontAwesome
+            android:id="@+id/faBack"
+            intfonticon="@{FontIconConstant.INSTANCE.ARROW_BACK_ICON}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
         <TextView
             android:id="@+id/tvHeader"
             android:layout_width="match_parent"
@@ -20,16 +30,7 @@
             android:textSize="20sp"
             android:includeFontPadding="false"/>
 
-        <com.fitpass.libfitpass.fontcomponent.FontAwesome
-            android:id="@+id/tvBack"
-            intfonticon="@{FontIconConstant.INSTANCE.ARROW_BACK_ICON}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+
 
 
     </RelativeLayout>

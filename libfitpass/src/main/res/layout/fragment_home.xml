@@ -58,7 +58,9 @@
                 android:layout_height="185dp"
                 android:clipToPadding="false"
                 upcomingItems="@{homedata.sliderList}"
-                upcomingviewModel="@{homedata.homeViewModel}"/>
+                upcomingviewModel="@{homedata.homeViewModel}"
+                fitpassHomeListener="@{homedata.fitpassHomeListener}"
+                />
             <LinearLayout
                 android:id="@+id/llDots"
                 android:layout_width="wrap_content"

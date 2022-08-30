@@ -29,17 +29,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textSize="27dp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="39dp" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="125dp"
             android:layout_toRightOf="@+id/rlIcon"
             android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/spf_prodisplay_regular"
+                android:includeFontPadding="false"
+                android:textColor="@color/green"
+                android:textSize="7dp"
+                android:visibility="visible"
+                tools:text="" />
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -64,8 +74,8 @@
                 date="@{scandata.start_time}"
                 outputformat='@{"dd MMM, hh:mm aa"}'/>
             <TextView
-                android:id="@+id/tvWorkoutSuccess"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvWorkoutStatus"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/spf_prodisplay_regular"
@@ -74,6 +84,7 @@
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Workout attended successfully at: 5:30 pm" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -112,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:gravity="center"
+                android:visibility="gone"
                 android:orientation="vertical">
 
 

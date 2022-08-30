@@ -13,6 +13,7 @@ import com.fitpass.libfitpass.home.adapters.FaqAdapter
 import com.fitpass.libfitpass.home.adapters.Macro_Adapter
 import com.fitpass.libfitpass.home.adapters.MenuAdapter
 import com.fitpass.libfitpass.home.adapters.UpcomingAdapter
+import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.List
 import com.fitpass.libfitpass.home.models.MacrosDetail
 import com.fitpass.libfitpass.home.models.Product
@@ -59,20 +60,20 @@ private fun getFaqItemsAdapter(recyclerView: RecyclerView, homeViewModel: HomeVi
     }
 }
 
-@BindingAdapter("upcomingItems","upcomingviewModel")
-fun bindUpcomingIItemsActivity(vp: ViewPager, list: MutableLiveData<ArrayList<SliderActivity>>?, homeViewModel: HomeViewModel) {
-    val adapter = getUpcomingIItemsAdapter(vp,homeViewModel)
+@BindingAdapter("upcomingItems","upcomingviewModel","fitpassHomeListener")
+fun bindUpcomingIItemsActivity(vp: ViewPager, list: MutableLiveData<ArrayList<SliderActivity>>?, homeViewModel: HomeViewModel,fitpassHomeListener: FitpassHomeListener) {
+    val adapter = getUpcomingIItemsAdapter(vp,homeViewModel,fitpassHomeListener)
     if (list!=null&&list!!.value!=null)
     {
         adapter.updateItems(list)
 
     }
 }
-private fun getUpcomingIItemsAdapter(vp: ViewPager, homeViewModel: HomeViewModel): UpcomingAdapter {
+private fun getUpcomingIItemsAdapter(vp: ViewPager, homeViewModel: HomeViewModel,fitpassHomeListener: FitpassHomeListener): UpcomingAdapter {
     return if (vp.adapter != null) {
         vp.adapter as UpcomingAdapter
     } else {
-        val bindableRecyclerAdapter = UpcomingAdapter(vp.context,homeViewModel)
+        val bindableRecyclerAdapter = UpcomingAdapter(vp.context,homeViewModel,fitpassHomeListener)
         vp.adapter = bindableRecyclerAdapter
         bindableRecyclerAdapter
     }
