@@ -66,11 +66,7 @@ class CommonRepository(val mContext: Context, val mActivity: Activity) {
                         )
                     } else {
 
-                        CustomToastView.errorToasMessage(
-                            mActivity,
-                            mContext,
-                            "" + response.getString("message")
-                        )
+                        CustomToastView.errorToasMessage(mActivity, mContext, "" + response.getString("message"))
                         handleResponseListeners.handleErrorMessage(
                             response?.optString("message"),
                             url

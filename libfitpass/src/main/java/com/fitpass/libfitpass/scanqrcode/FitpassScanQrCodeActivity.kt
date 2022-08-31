@@ -13,12 +13,12 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.view.Window
+import android.view.WindowManager
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -27,8 +27,7 @@ import com.fitpass.libfitpass.scanqrcode.viewmodel.ScanViewModel
 import com.fitpass.libfitpass.scanqrcode.viewmodelfactory.ScanViewModelFactory
 import com.fitpass.libfitpass.base.constants.FontIconConstant
 import com.fitpass.libfitpass.base.customview.CustomToastView
-import com.fitpass.libfitpass.base.utilities.FitpassConfig
-import com.fitpass.libfitpass.base.utilities.FitpassConfigUtil
+import com.fitpass.libfitpass.base.utilities.*
 import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.ActivityFitpassScanQrCodeBinding
 import com.fitpass.libfitpass.fontcomponent.FontAwesome
@@ -37,17 +36,17 @@ import com.fitpass.libfitpass.scanqrcode.listeners.FitpassScanListener
 import com.fitpass.libfitpass.scanqrcode.models.Workout
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
-import com.journeyapps.barcodescanner.BarcodeCallback
-import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.CaptureManager
+import com.journeyapps.barcodescanner.*
 import org.json.JSONObject
 import java.io.InputStream
 
 
 class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     var CAMERA_REQUEST_CODE: Int = 100
+    var LOCATION_REQUEST_CODE: Int = 100
     var PICK_IMAGE_FROM_GALLERY: Int = 100
     private var capture: CaptureManager? = null
+
     lateinit var binding: ActivityFitpassScanQrCodeBinding
     lateinit var llFlash: LinearLayout
     lateinit var rlScanGalley: RelativeLayout
@@ -55,7 +54,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     lateinit var tvScanGallery: TextView
     var isFlash: Boolean = true
     var isFlashAvail: Boolean = true
-    var user_schedule_id: String = "0"
+
     var workout_name: String = ""
     var start_time: String = ""
     var security_code: String = ""
@@ -68,18 +67,38 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     private var scanViewModel: ScanViewModel?=null
     var position:Int=0
     companion object{
+        var user_schedule_id: String = "0"
         lateinit var tvStatus:TextView
         lateinit var llScanHelp:LinearLayout
         lateinit var rlIcon:RelativeLayout
         lateinit var faIcon:FontAwesome
+        lateinit var flScan: FrameLayout
+        lateinit var vf: ViewfinderView
+        lateinit var bv: BarcodeView
 
     }
-
+    private fun hideBottomBars(newScannerBinding:ActivityFitpassScanQrCodeBinding?,fullScreen: Boolean) {
+        val decorView = window.decorView
+        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR  or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        newScannerBinding?.rlDetail!!.fitsSystemWindows=true
+    }
+    fun hideTitleBar(){
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        hideTitleBar()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_fitpass_scan_qr_code)
+        user_schedule_id="0"
+        flScan=binding.barcodeScanner
+        hideBottomBars(binding,true)
         init()
-
+        setPadding()
         setStatusBarColor()
         var commonRepository= CommonRepository(this,this)
         var scanModelFactories=  ScanViewModelFactory(commonRepository,this,this,this)
@@ -90,6 +109,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         capture = CaptureManager(this, binding.barcodeScanner)
         capture!!.initializeFromIntent(intent, savedInstanceState)
         binding.barcodeScanner.decodeContinuous(callback)
+
         onCLick()
     }
     fun setStatusBarColor() {
@@ -107,23 +127,40 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         rlScanGalley = binding?.root?.findViewById<RelativeLayout>(R.id.rlScanGalley)!!
         llRefreshLocation = binding?.root?.findViewById<LinearLayout>(R.id.llRefreshLocation)!!
         tvScanGallery = binding?.root?.findViewById<TextView>(R.id.tvScanGallery)!!
+        flScan = binding?.root?.findViewById<FrameLayout>(R.id.flScan)!!
+        vf = binding?.root?.findViewById<ViewfinderView>(R.id.zxing_viewfinder_view)!!
+        bv = binding?.root?.findViewById<BarcodeView>(R.id.zxing_barcode_surface)!!
         Util.setFantIcon(faFlash!!, FontIconConstant.FLASH_ICON)
         Util.setFantIcon(faRefreshLocation!!, FontIconConstant.REFERESH_LOC_ICON)
         Util.setFantIcon(faScanFromGallery!!, FontIconConstant.GALLEY_ICON)
+        Util.setFantIcon(binding.faCross!!, FontIconConstant.CLOSE_ICON)
         if(!isFlashAvail){
             llFlash.visibility= View.GONE
         }
     }
+    fun setPadding() {
+        var fitpassConfig = FitpassConfig.getInstance()
+        var paddingDp: Int = fitpassConfig!!.getPadding();
+        var density = getResources().getDisplayMetrics().density.toFloat()
+        var paddingPixel = (paddingDp * density).toInt();
+        binding.rlHeader.setPadding(paddingPixel, 0, paddingPixel, 0);
 
+    }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun onCLick() {
+        binding.rlCross.setOnClickListener {
+            onBackPressed()
+        }
         llFlash!!.setOnClickListener {
             if (isFlash) {
                 isFlash = false
                 binding.barcodeScanner.setTorchOn()
+
             } else {
                 isFlash = true
                 binding.barcodeScanner.setTorchOff()
+
             }
         }
         rlScanGalley!!.setOnClickListener {
@@ -133,6 +170,17 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             openGallery()
         }
         llRefreshLocation!!.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION_REQUEST_CODE
+                )
+            }else{
+                Log.d("checkPermission","grant")
+                FitpassLocationUtil.refreshLocation(this)
+            }
 
         }
         binding.tvShowQrCode.setOnClickListener {
@@ -168,6 +216,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             )
         } else {
             capture!!.onResume()
+
         }
     }
 
@@ -185,7 +234,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert()
+                alert("We need to allow the camera permission to scan the QR Code. Do you want to allow it.")
             }
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("onRequestResult","PERMISSION_GRANTED")
@@ -193,11 +242,28 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             } else {
             }
         }
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                alert("We need to allow the location permission. Do you want to allow it.")
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_DENIED
+            ) {
+                alert("We need to allow the location permission. Do you want to allow it.")
+            }
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("onRequestResult","PERMISSION_GRANTED")
+               FitpassLocationUtil.refreshLocation(this)
+            } else {
+            }
+        }
     }
 
-    fun alert() {
+    fun alert(msg:String) {
         val builder1 = AlertDialog.Builder(this)
-        builder1.setMessage("We need to allow the camera permission to scan the QR Code. Do you want to allow it.")
+        builder1.setMessage(msg)
         builder1.setCancelable(false)
         builder1.setPositiveButton(
             "Yes"
@@ -239,11 +305,13 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     override fun onPause() {
         super.onPause()
         capture!!.onPause()
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         capture!!.onDestroy()
+
     }
 
     private fun openGallery() {

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -99,6 +98,79 @@ class CustomToastView {
             return dialog
         }
 
+        fun errorToastMessage(
+            activity: Activity,
+            context: Context?,
+            message: String?,
+            showTryAgaiView: Boolean,
+            retryListener: RetryListener
+        ): Dialog? {
+            activity.runOnUiThread(Runnable {
+                if (dialog == null || dialog != null && !dialog!!.isShowing() && !activity.isFinishing) {
+                    dialog =
+                        Dialog(activity)
+                    dialog!!.requestWindowFeature(
+                        Window.FEATURE_NO_TITLE
+                    )
+                    dialog!!.setCancelable(
+                        true
+                    )
+                    dialog!!.requestWindowFeature(
+                        Window.FEATURE_NO_TITLE
+                    )
+                    dialog!!.setCancelable(
+                        true
+                    )
+                    dialog!!.setContentView(R.layout.error_footer_layout)
+                    dialog!!.getWindow()
+                        ?.setLayout(
+                            WindowManager.LayoutParams.MATCH_PARENT,
+                            WindowManager.LayoutParams.WRAP_CONTENT
+                        )
+                    val window: Window? =
+                        dialog!!.getWindow()
+                    val wlp = window!!.attributes
+                    wlp.gravity = Gravity.BOTTOM
+                    wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+                    window.attributes = wlp
+                    dialog!!.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
+                    val image: FontAwesome =
+                        dialog!!.findViewById<View>(
+                            R.id.fa_info
+                        ) as FontAwesome
+                    val ll_error_base =
+                        dialog!!.findViewById<View>(
+                            R.id.ll_error_base
+                        ) as LinearLayout
+                    val fa_error_cross: FontAwesome =
+                        dialog!!.findViewById<View>(
+                            R.id.fa_error_cross
+                        ) as FontAwesome
+                    //CommonMethods.setimage(fa_error_cross, Constants.Companion.getIcon_close());
+                    Util.setimage(image, FontIconConstant.ERROR_ICON)
+                    val text =
+                        dialog!!.findViewById<View>(
+                            R.id.tv_server_error_message
+                        ) as TextView
+                    val tvRetry =
+                        dialog!!.findViewById<View>(
+                            R.id.tv_retry
+                        ) as TextView
+                    text.text = message
+                    if (showTryAgaiView) {
+                        tvRetry.visibility = View.VISIBLE
+                    }
+                    dialog!!.show()
+                    tvRetry.setOnClickListener {
+                        dialog!!.cancel()
+                        dialog!!.dismiss()
+                        retryListener.onRetryClick("")
+                    }
+
+                }
+            })
+            return dialog
+        }
 
     }
 }
