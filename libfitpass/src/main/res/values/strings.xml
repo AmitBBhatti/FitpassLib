@@ -22,6 +22,8 @@
     <string name="showqrcode">Show your QR code</string>
     <string name="needhelp">Need Help</string>
     <string name="yourqrcode">Your QR code</string>
+    <string name="cameramsg">We need to allow the camera permission to scan the QR Code. Do you want to allow it.</string>
+    <string name="locationmsg">We need to allow the location permission. Do you want to allow it.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

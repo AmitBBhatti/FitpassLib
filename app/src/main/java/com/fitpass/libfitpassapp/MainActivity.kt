@@ -14,12 +14,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         var fitpassConfig= FitpassConfig.getInstance()
         fitpassConfig!!.setHeaderColor("#625986")
+        fitpassConfig!!.setHeaderFontColor("#ffffff")
+        fitpassConfig!!.setHeaderTitle("FITPASS")
         fitpassConfig!!.setPadding(16)
-       // FitpassConfigNew.setStatusBarcolor("#625986")
         var intent=Intent(this,FitpassDashboard::class.java)
         startActivity(intent)
     }
-
     fun click(view: View) {
         var intent=Intent(this,FitpassDashboard::class.java)
         startActivity(intent)

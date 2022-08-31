@@ -6,5 +6,7 @@ data class Product(
     val font_color: String,
     val font_name: String,
     val redircet_url: String,
-    val title: String
+    val title: String,
+    val location_permission: Boolean,
+    val query_paramter: String
 )

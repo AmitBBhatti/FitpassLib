@@ -22,19 +22,19 @@ import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 import com.fitpass.libfitpass.scanqrcode.listeners.FitpassScanListener
 
 
-@BindingAdapter("menuItems","menuViewModel")
-fun bindproductItemsActivity(recyclerView: RecyclerView, list: MutableLiveData<ArrayList<Product>>?, homeViewModel: HomeViewModel) {
-    val adapter = getProductItemsAdapter(recyclerView,homeViewModel)
+@BindingAdapter("menuItems","menuViewModel","menufitpassHomeListener")
+fun bindproductItemsActivity(recyclerView: RecyclerView, list: MutableLiveData<ArrayList<Product>>?, homeViewModel: HomeViewModel,fitpassHomeListener: FitpassHomeListener) {
+    val adapter = getProductItemsAdapter(recyclerView,homeViewModel,fitpassHomeListener)
     if (list!=null&&list!!.value!=null)
     {
-        adapter.updateItems(list)
+        adapter.updateItems(list,)
     }
 }
-private fun getProductItemsAdapter(recyclerView: RecyclerView, homeViewModel: HomeViewModel): MenuAdapter {
+private fun getProductItemsAdapter(recyclerView: RecyclerView, homeViewModel: HomeViewModel,fitpassHomeListener: FitpassHomeListener): MenuAdapter {
     return if (recyclerView.adapter != null) {
         recyclerView.adapter as MenuAdapter
     } else {
-        val bindableRecyclerAdapter = MenuAdapter(homeViewModel)
+        val bindableRecyclerAdapter = MenuAdapter(homeViewModel,fitpassHomeListener)
         recyclerView.layoutManager= LinearLayoutManager(recyclerView.context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = bindableRecyclerAdapter
         bindableRecyclerAdapter

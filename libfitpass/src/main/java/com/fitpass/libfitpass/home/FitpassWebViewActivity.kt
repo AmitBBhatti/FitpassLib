@@ -18,6 +18,7 @@ import com.fitpass.libfitpass.base.http_client.CustomLoader
 import com.fitpass.libfitpass.base.utilities.FitpassConfig
 import com.fitpass.libfitpass.base.utilities.FitpassConfigUtil
 import com.fitpass.libfitpass.databinding.ActivityFitpassWebViewBinding
+import java.lang.Exception
 
 class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var binding:ActivityFitpassWebViewBinding
@@ -25,9 +26,8 @@ class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= DataBindingUtil.setContentView(this,R.layout.activity_fitpass_web_view);
-        setHeaderColor()
+        setHeader()
         var url=intent.extras!!.getString("url")
-        Log.d("url",url+"..");
         binding.webview.setWebViewClient(WebViewClientDemo(this,this));
         binding.webview.setWebChromeClient(WebChromeClientDemo());
         binding.webview.getSettings().setJavaScriptEnabled(true);
@@ -35,11 +35,26 @@ class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
         binding.webview.loadUrl(url!!);
         binding.tvBack.setOnClickListener(this);
     }
-    fun setHeaderColor() {
+
+    fun setHeader() {
         var fitpassConfig = FitpassConfig.getInstance()
         if (!fitpassConfig!!.getHeaderColor().isNullOrEmpty()) {
             FitpassConfigUtil.setStatusBarColor(this, this, fitpassConfig.getHeaderColor())
-            binding.tvHeader.setBackgroundColor(Color.parseColor(fitpassConfig.getHeaderColor()))
+           try {
+               binding.tvHeader.setBackgroundColor(Color.parseColor(fitpassConfig.getHeaderColor()))
+           }catch (e:Exception){
+
+           }
+        }
+        if (!fitpassConfig!!.getHeaderTitle().isNullOrEmpty()) {
+            binding.tvHeader.setText(fitpassConfig!!.getHeaderTitle())
+        }
+        if (!fitpassConfig!!.getHeaderFontColor().isNullOrEmpty()) {
+            try {
+                binding.tvHeader.setTextColor(Color.parseColor(fitpassConfig!!.getHeaderFontColor()))
+            }catch (e:Exception){
+
+            }
         }
     }
    override fun onClick(view: View) {
@@ -59,17 +74,26 @@ class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
          var activity:Activity=activity1
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             view!!.loadUrl(url!!);
+            Log.d("url1",url+"..");
             return true;
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
             CustomLoader.showLoaderDialog(activity,context)
+            Log.d("url2",url+"..");
+            if(url!!.contains("data=true")){
+                activity.onBackPressed()
+            }
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            Log.d("url3",url+"..");
             CustomLoader.hideLoaderDialog(activity)
+            if(url!!.contains("data=true")){
+                activity.onBackPressed()
+            }
         }
 
     }

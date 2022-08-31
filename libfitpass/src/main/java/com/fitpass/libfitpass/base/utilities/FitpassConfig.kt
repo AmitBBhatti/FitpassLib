@@ -1,8 +1,20 @@
 package com.fitpass.libfitpass.base.utilities
 
 class FitpassConfig {
-    var headerColor:String=""
+    var headerColor:String="#625986"
+    var headerFontColor:String="#FFFFFF"
+    var headerTitle:String="FITPASS"
     var padding:Int=16
+    @JvmName("setHeaderFontColor1")
+    fun setHeaderFontColor(headerFontColor:String){
+        this.headerFontColor=headerFontColor
+
+    }
+    @JvmName("getHeaderFontColor1")
+    fun getHeaderFontColor(): String{
+        return headerFontColor
+    }
+
     @JvmName("setheaderColor1")
     fun setHeaderColor(headerColor:String){
         this.headerColor=headerColor
@@ -12,14 +24,28 @@ class FitpassConfig {
     fun getHeaderColor(): String{
         return headerColor
     }
+    @JvmName("setHeaderTitle1")
+    fun setHeaderTitle(headerTitle:String){
+        if(!headerTitle.isNullOrEmpty()){
+            this.headerTitle=headerTitle
+        }
+    }
+    @JvmName("getHeaderTitle1")
+    fun getHeaderTitle(): String{
+        return headerTitle
+    }
     @JvmName("setPadding1")
     fun setPadding(padding:Int){
-        this.padding=padding
+        if(padding>0){
+            this.padding=padding
+        }
+
     }
     @JvmName("getPadding1")
     fun getPadding():Int{
         return padding
     }
+
     companion object {
         private var INSTANCE: FitpassConfig? = null
         fun getInstance(): FitpassConfig? {

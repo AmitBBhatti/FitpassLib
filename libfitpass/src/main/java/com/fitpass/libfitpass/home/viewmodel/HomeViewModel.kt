@@ -15,6 +15,7 @@ import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.dataencription.RandomKeyGenrator
 import com.fitpass.libfitpass.base.http_client.CustomLoader
+import com.fitpass.libfitpass.base.utilities.FitpassPrefrenceUtil
 import com.fitpass.libfitpass.home.FitpassWebViewActivity
 import com.fitpass.libfitpass.home.http_client.ApiConstants
 import com.fitpass.libfitpass.home.http_client.CommonRepository
@@ -88,6 +89,7 @@ class HomeViewModel(
         viewModelScope.launch {
             homeresponse.value = response
             if (response.results.slider_activity != null) {
+                FitpassPrefrenceUtil.setStringPrefs(context,FitpassPrefrenceUtil.USER_ID,homeresponse!!.value!!.results.user_details.user_id.toString())
                 val slideractivitylist = ArrayList<SliderActivity>()
                 for (data in response.results.slider_activity) {
                     if (data.action.equals(ConfigConstants.WORKOUT_ACTION)) {

@@ -11,10 +11,11 @@ import androidx.viewbinding.ViewBinding
 import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.MenuRowBinding
+import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.Product
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 
-class MenuAdapter (val homeViewModel: HomeViewModel): RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
+class MenuAdapter (val homeViewModel: HomeViewModel,val fitpassHomeListener: FitpassHomeListener): RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
     val list=  MutableLiveData<ArrayList<Product>>()
     override fun getItemViewType(position: Int): Int {
         return super.getItemViewType(position)
@@ -31,8 +32,6 @@ class MenuAdapter (val homeViewModel: HomeViewModel): RecyclerView.Adapter<MenuA
             return 0
         }
     }
-
-
     override  fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.product=list.value!!.get(position)
         holder.binding.homeData=homeViewModel
@@ -44,7 +43,8 @@ class MenuAdapter (val homeViewModel: HomeViewModel): RecyclerView.Adapter<MenuA
         }
         holder.binding.llDetail.setOnClickListener {
             if(!list!!.value!!.get(position).redircet_url.isNullOrEmpty()){
-                homeViewModel.menuActions(list!!.value!!.get(position).redircet_url)
+                //homeViewModel.menuActions(list!!.value!!.get(position).redircet_url)
+                fitpassHomeListener.onMenuClick(list!!.value!!.get(position))
             }
 
         }
