@@ -63,9 +63,9 @@ class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel,val 
             var binding = UpcommingWorkoutRowBinding.inflate(layoutInflater1, container, false)
             binding.workoutdata=list.value!!.get(position)
             binding.homeData=homeViewModel
-            if(position!=0&&position==list!!.value!!.size-1){
+            /*if(position!=0&&position==list!!.value!!.size-1){
                 binding.rlDetail.setPadding(0, 0, paddingPixel, 0);
-            }
+            }*/
             if(list.value!!.get(position).data.workout_status.equals("3")){
                 binding.viewCircle.visibility=View.GONE
                 if(list.value!!.get(position).data.urc_updated_time!=null)
@@ -94,9 +94,9 @@ class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel,val 
             var binding = UpcommingImageRowBinding.inflate(layoutInflater1, container, false)
             binding.upcommingdata=list.value!!.get(position)
             binding.homeData=homeViewModel
-            if(position!=0&&position==list!!.value!!.size-1){
+            /*if(position!=0&&position==list!!.value!!.size-1){
                 binding.rlDetail.setPadding(0, 0, paddingPixel, 0);
-            }
+            }*/
             binding.rlDetail.setOnClickListener {
                 homeViewModel.upCommingActions(ConfigConstants.NOTICE_ACTION,list!!.value!!.get(position).data?.url,list!!.value!!.get(position).data?.show_header)
             }
@@ -106,9 +106,9 @@ class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel,val 
             var binding = UpcommingImageRowBinding.inflate(layoutInflater1, container, false)
             binding.upcommingdata=list.value!!.get(position)
             binding.homeData=homeViewModel
-            if(position!=0&&position==list!!.value!!.size-1){
+           /* if(position!=0&&position==list!!.value!!.size-1){
                 binding.rlDetail.setPadding(0, 0, paddingPixel, 0);
-            }
+            }*/
             binding.rlDetail.setOnClickListener {
                 homeViewModel.upCommingActions(ConfigConstants.HRA_COMPLETE_ACTION,list?.value?.get(position)?.data?.url,list!!.value!!.get(position).data?.show_header)
             }
@@ -120,9 +120,9 @@ class UpcomingAdapter(val context: Context,val homeViewModel: HomeViewModel,val 
             binding.macrodata=list.value!!.get(position)
             binding.homeData=homeViewModel
 
-            if(position!=0&&position==list!!.value!!.size-1){
+          /*  if(position!=0&&position==list!!.value!!.size-1){
                 binding.rlDetail.setPadding(0, 0, paddingPixel, 0);
-            }
+            }*/
             if(list!!.value!!.get(position).today_calorie_taken.given.isNullOrEmpty()){
                 binding.progress.maxProgress=list!!.value!!.get(position).today_calorie_taken.given.toDouble()
             }

@@ -150,7 +150,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         binding.rvMenu.setPadding(paddingPixel, 0, paddingPixel, 0);
         var paddingDp1: Int = fitpassConfig!!.getPadding() - 5;
         var paddingPixel1 = (paddingDp1 * density).toInt();
-        binding.vpUpcomming.setPadding(paddingPixel1, 0, 0, 0);
+        binding.vpUpcomming.setPadding(paddingPixel1, 0, paddingPixel1, 0);
         var paddingDp2: Int = fitpassConfig!!.getPadding() - 4;
         var paddingPixel2 = (paddingDp2 * density).toInt();
         binding.rvFaq.setPadding(paddingPixel, 0, paddingPixel, 0);

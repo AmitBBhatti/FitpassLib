@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -67,6 +68,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     private lateinit var activityId:String
     private var scanViewModel: ScanViewModel?=null
     var position:Int=0
+    var isGalleyOpen:Boolean=false
     companion object{
         var user_schedule_id: String = "0"
         lateinit var tvStatus:TextView
@@ -200,6 +202,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             }
         }
         rlScanGalley!!.setOnClickListener {
+
             openGallery()
         }
         tvScanGallery!!.setOnClickListener {
@@ -352,10 +355,16 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     }
 
     private fun openGallery() {
-        val pickIntent =
-            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickIntent.type = "image/*"
-        startActivityForResult(pickIntent, PICK_IMAGE_FROM_GALLERY)
+        if(!isGalleyOpen) {
+           val pickIntent =
+               Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+           pickIntent.type = "image/*"
+           startActivityForResult(pickIntent, PICK_IMAGE_FROM_GALLERY)
+       }
+        isGalleyOpen=true
+        Handler().postDelayed ({
+            isGalleyOpen=false
+        }, 1000)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
