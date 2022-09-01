@@ -45,7 +45,7 @@ class FitpassShowQrCodeActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_qr_code)
         binding.header1.tvHeader.setText(resources.getString(R.string.yourqrcode))
         Util.setFantIcon(binding.header1.faBack,FontIconConstant.ARROW_BACK_ICON)
-        Util.setFantIcon(binding.faLogo,FontIconConstant.FITPASS_ICON)
+        Util.setFantIcon(binding.faLogo,FontIconConstant.LOGO_ICON)
         getData()
         val currenttime = System.currentTimeMillis() / 1000
         createQrCode(currenttime.toString())
@@ -110,7 +110,7 @@ class FitpassShowQrCodeActivity : AppCompatActivity() {
             var paddingDp: Int = fitpassConfig!!.getPadding();
             var density = getResources().getDisplayMetrics().density.toFloat()
             var paddingPixel = (paddingDp * density).toInt();
-            securityCode = Util.encrptdata(textToSend.toString()).toString()
+            securityCode = Util.encrptDataWithSecretekey(this,textToSend.toString()).toString()
             //var width=
             val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, screenWidth-paddingPixel ,screenWidth-paddingPixel)
             val barcodeEncoder: BarcodeEncoder = BarcodeEncoder()

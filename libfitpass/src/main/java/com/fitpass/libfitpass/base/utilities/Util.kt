@@ -1,5 +1,6 @@
 package com.fitpass.libfitpass.base.utilities
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -100,6 +101,25 @@ object Util {
             encrptData = cryptLib.encryptPlainTextWithRandomIV(
                 data,
                 ConfigConstants.OLD_PAYLOAD_ENCRYPTION_KEY
+            )
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            encrptData = e.message.toString()
+        } catch (e: NoSuchPaddingException) {
+            e.printStackTrace()
+            encrptData = e.message.toString()
+        } catch (e: Exception) {
+            encrptData = e.localizedMessage
+        }
+        return encrptData
+    }
+    fun encrptDataWithSecretekey(context: Context,data: String?): String? {
+        var encrptData = ""
+        try {
+            val cryptLib = CryptLib()
+            encrptData = cryptLib.encryptPlainTextWithRandomIV(
+                data,
+                FitpassPrefrenceUtil.getStringPrefs(context,FitpassPrefrenceUtil.SECRET_KEY,"")
             )
         } catch (e: NoSuchAlgorithmException) {
             e.printStackTrace()

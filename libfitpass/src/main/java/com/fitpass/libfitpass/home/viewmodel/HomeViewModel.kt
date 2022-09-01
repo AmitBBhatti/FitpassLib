@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager.widget.ViewPager
 import com.fitpass.libfitpass.R
-import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.dataencription.RandomKeyGenrator
+import com.fitpass.libfitpass.base.fitpasscomparators.FitpassLowtoHighComparator
 import com.fitpass.libfitpass.base.http_client.CustomLoader
 import com.fitpass.libfitpass.base.utilities.FitpassPrefrenceUtil
 import com.fitpass.libfitpass.home.FitpassWebViewActivity
@@ -23,15 +23,17 @@ import com.fitpass.libfitpass.home.http_client.HandleResponseListeners
 import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.*
 import com.fitpass.libfitpass.home.models.List
-
+import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
-import org.json.JSONObject
-import retrofit2.Response
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeViewModel(
     val commonRepository: CommonRepository,
@@ -48,10 +50,10 @@ class HomeViewModel(
     var macroList = MutableLiveData<ArrayList<MacrosDetail>>()
     private var handleResponseListeners: HandleResponseListeners? = null
     var homeViewModel: HomeViewModel? = null
-     var isScanQrCode=MutableLiveData<Boolean>()
+    var isScanQrCode = MutableLiveData<Boolean>()
 
     init {
-        isScanQrCode.value=false
+        isScanQrCode.value = false
         homeViewModel = this
         handleResponseListeners = this@HomeViewModel
     }
@@ -89,19 +91,30 @@ class HomeViewModel(
         viewModelScope.launch {
             homeresponse.value = response
             if (response.results.slider_activity != null) {
-                FitpassPrefrenceUtil.setStringPrefs(context,FitpassPrefrenceUtil.USER_ID,homeresponse!!.value!!.results.user_details.user_id.toString())
+                FitpassPrefrenceUtil.setStringPrefs(context, FitpassPrefrenceUtil.USER_ID, homeresponse!!.value!!.results.user_details.user_id.toString())
+                FitpassPrefrenceUtil.setStringPrefs(context, FitpassPrefrenceUtil.SECRET_KEY, homeresponse!!.value!!.results.user_details.secret_key.toString())
                 val slideractivitylist = ArrayList<SliderActivity>()
                 for (data in response.results.slider_activity) {
                     if (data.action.equals(ConfigConstants.WORKOUT_ACTION)) {
-                        isScanQrCode.value=true
+                        isScanQrCode.value = true
                         slideractivitylist.add(data)
                     } else if (data.action.equals(ConfigConstants.NOTICE_ACTION)) {
-                        slideractivitylist.add(data)
+                        if (!data?.data?.img.isNullOrEmpty()) {
+                            slideractivitylist.add(data)
+                        }
+
                     } else if (data.action.equals(ConfigConstants.MEAL_LOG_ACTION)) {
                         slideractivitylist.add(data)
                         macroList.value = data.macros_details
+
+                    } else if (data.action.equals(ConfigConstants.HRA_COMPLETE_ACTION)) {
+                        slideractivitylist.add(data)
+                        if (!data?.data?.img.isNullOrEmpty()) {
+                            slideractivitylist.add(data)
+                        }
                     }
                 }
+                Collections.sort(slideractivitylist, FitpassLowtoHighComparator())
                 sliderList.value = slideractivitylist
                 setupPagerIndidcatorDots(0)
                 setViewPagerListener()
@@ -170,19 +183,17 @@ class HomeViewModel(
         }
     }
 
-    fun upCommingActions(action: String, url: String) {
-        if (action.equals(ConfigConstants.MEAL_LOG_ACTION)) {
-            openWebActivity(url)
-        }
+    fun upCommingActions(action: String, url: String?,showHeader:Boolean?) {
+        openWebActivity(url,showHeader)
+    }
 
-    }
-    fun menuActions(url: String) {
-        openWebActivity(url)
-    }
-    fun openWebActivity(url: String){
-        var intent = Intent(context, FitpassWebViewActivity::class.java)
-        intent.putExtra("url", url)
-        context.startActivity(intent)
+    fun openWebActivity(url: String?,showHeader:Boolean?) {
+        if (!url.isNullOrEmpty()) {
+            var intent = Intent(context, FitpassWebViewActivity::class.java)
+            intent.putExtra("url", url)
+            intent.putExtra("show_header", showHeader)
+            context.startActivity(intent)
+        }
     }
 
 
@@ -190,7 +201,6 @@ class HomeViewModel(
         var intent = Intent(context, FitpassScanQrCodeActivity::class.java)
         context.startActivity(intent)
     }
-
 
 
 }

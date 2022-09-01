@@ -28,6 +28,12 @@ class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
         binding= DataBindingUtil.setContentView(this,R.layout.activity_fitpass_web_view);
         setHeader()
         var url=intent.extras!!.getString("url")
+        var show_header=intent.extras!!.getBoolean("show_header")
+         if(show_header){
+             binding.rlHeader.visibility=View.VISIBLE
+         }else{
+             binding.rlHeader.visibility=View.GONE
+         }
         binding.webview.setWebViewClient(WebViewClientDemo(this,this));
         binding.webview.setWebChromeClient(WebChromeClientDemo());
         binding.webview.getSettings().setJavaScriptEnabled(true);
@@ -80,27 +86,25 @@ class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            CustomLoader.showLoaderDialog(activity,context)
+           // CustomLoader.showLoaderDialog(activity,context)
             Log.d("url2",url+"..");
-            if(url!!.contains("data=true")){
-                activity.onBackPressed()
+            if(url!!.contains("events.fitpass.dev")){
+                activity.finish()
             }
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             Log.d("url3",url+"..");
-            CustomLoader.hideLoaderDialog(activity)
-            if(url!!.contains("data=true")){
-                activity.onBackPressed()
+           // CustomLoader.hideLoaderDialog(activity)
+            if(url!!.contains("events.fitpass.dev")){
+                activity.finish()
             }
         }
-
     }
     private class WebChromeClientDemo : WebChromeClient() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
         }
-
     }
 }

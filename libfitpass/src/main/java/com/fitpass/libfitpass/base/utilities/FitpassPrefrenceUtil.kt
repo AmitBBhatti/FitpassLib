@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 object FitpassPrefrenceUtil {
     const val PREFERENCE_NAME = "fitpasspref"
     var USER_ID = "userid"
+    var SECRET_KEY = "secret_key"
     var LATITUDE = "latitude"
     var LONGITUDE = "longitude"
     private fun getSharedPrefs(context: Context): SharedPreferences {

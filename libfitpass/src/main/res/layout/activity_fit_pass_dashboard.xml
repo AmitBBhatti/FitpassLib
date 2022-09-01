@@ -52,6 +52,7 @@
                     >
 
                     <TextView
+                        android:id="@+id/tvWishMesg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/sf_pro_display_semi_bold_italic"
@@ -78,7 +79,7 @@
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/vpUpcomming"
                     android:layout_width="match_parent"
-                    android:layout_height="185dp"
+                    android:layout_height="175dp"
                     android:clipToPadding="false"
                     upcomingItems="@{homedata.sliderList}"
                     upcomingviewModel="@{homedata.homeViewModel}"
@@ -90,7 +91,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="5dp"
+                    >
 
                 </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView

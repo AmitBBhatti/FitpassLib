@@ -43,7 +43,7 @@
                 android:textSize="15dp"
                 android:fontFamily="@font/spf_pro_display_bold"/>
         </RelativeLayout>
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/flScan"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -55,12 +55,14 @@
                 android:id="@+id/barcodeScanner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 app:zxing_preview_scaling_strategy="fitXY"
                 app:zxing_scanner_layout="@layout/custom_barcode_scanner"
                 app:zxing_use_texture_view="false"
                 />
 
-        </FrameLayout>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/llShowQr"
@@ -88,11 +90,14 @@
         </RelativeLayout>
 
        <RelativeLayout
+           android:id="@+id/rlScanList"
            android:layout_width="wrap_content"
            android:layout_height="match_parent"
            android:layout_below="@+id/llShowQr"
            android:layout_marginTop="5dp"
-           android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}">
+           android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}"
+          >
+           <!-- android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}"-->
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"

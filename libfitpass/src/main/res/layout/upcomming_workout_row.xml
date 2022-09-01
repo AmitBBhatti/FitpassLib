@@ -28,13 +28,14 @@
     <RelativeLayout
         android:id="@+id/rlDetail"
         android:layout_width="match_parent"
-        android:layout_height="185dp">
+        android:layout_height="175dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="10dp"
+
             app:cardUseCompatPadding="true">
 
             <RelativeLayout
@@ -71,7 +72,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="4dp"
                             android:gravity="center"
                             android:orientation="horizontal">
 
@@ -102,7 +103,7 @@
                                 android:id="@+id/rlIcon"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:layout_marginTop="8.5dp"
+                                android:layout_marginTop="7.5dp"
                                 android:background="@drawable/white_shape">
 
                                 <com.fitpass.libfitpass.fontcomponent.FontAwesome
@@ -120,7 +121,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="9dp"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="1dp"
                                 android:layout_toRightOf="@+id/rlIcon"
                                 android:fontFamily="@font/sf_pro_display_semi_bold"
                                 android:text="@{workoutdata.data.workout_name}"
@@ -150,7 +151,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="38dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/white_shape"
                     android:gravity="center"
@@ -189,13 +190,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         >
+
                         <com.makeramen.roundedimageview.RoundedImageView
+                            loadImage="@{workoutdata.data.studio_logo}"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            loadImage="@{workoutdata.data.studio_logo}"
                             app:riv_border_color="@color/grey3"
-                            app:riv_corner_radius="4dp"
-                            app:riv_border_width="1dp"/>
+                            app:riv_border_width="0.5dp"
+                            app:riv_corner_radius="4dp" />
 
                         <ImageView
                             android:layout_width="25dp"
@@ -217,7 +219,6 @@
                         android:textSize="10sp" />
 
                     <TextView
-
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvName1"
@@ -242,7 +243,9 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/blue"
                             android:textSize="20dp"
-                            android:visibility='@{workoutdata.data.workout_status.equals("3")?View.GONE:View.VISIBLE}' />
+                            android:visibility="gone"
+                             />
+                        <!--android:visibility='@{workoutdata.data.workout_status.equals("3")?View.GONE:View.VISIBLE}'-->
 
                         <com.fitpass.libfitpass.fontcomponent.FontAwesome
                             intfonticon="@{FontIconConstant.INSTANCE.DIRECTION_ICON}"

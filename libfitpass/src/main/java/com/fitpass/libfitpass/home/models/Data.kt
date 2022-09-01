@@ -34,5 +34,6 @@ data class Data(
     val workout_name: String,
     val workout_status: String,
     val workout_time: String,
-    val workout_time_id: String
+    val workout_time_id: String,
+    val show_header: Boolean
 )

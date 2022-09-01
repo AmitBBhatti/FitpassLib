@@ -14,12 +14,14 @@ public object FontIconConstant {
         val SCAN_ICON = 0xe9c5
         val VIDEO_ICON = 0xe9b6
         val ARROW_BACK_ICON = 0xe905
-        val FLASH_ICON = 0xe9ce
+        val FLASH_ICON_ON = 0xe9ce
+        val FLASH_ICON_OFF = 0xe9fd
         val GALLEY_ICON = 0xea25
         val REFERESH_LOC_ICON = 0xea24
         val ACTIVE_ICON = 0xea2e
         val GYM_WORKOUT_ICON = 0xe91f
         val FITPASS_ICON = 0xe91b
+        val LOGO_ICON = 0xe908
 
 
 }

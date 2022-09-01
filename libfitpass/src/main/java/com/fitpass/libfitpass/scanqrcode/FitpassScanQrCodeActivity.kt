@@ -52,6 +52,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     lateinit var rlScanGalley: RelativeLayout
     lateinit var llRefreshLocation: LinearLayout
     lateinit var tvScanGallery: TextView
+    lateinit var faFlash : FontAwesome
     var isFlash: Boolean = true
     var isFlashAvail: Boolean = true
 
@@ -72,7 +73,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         lateinit var llScanHelp:LinearLayout
         lateinit var rlIcon:RelativeLayout
         lateinit var faIcon:FontAwesome
-        lateinit var flScan: FrameLayout
+        lateinit var flScan: LinearLayout
         lateinit var vf: ViewfinderView
         lateinit var bv: BarcodeView
 
@@ -93,12 +94,14 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideTitleBar()
+        setCordinate()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_fitpass_scan_qr_code)
         user_schedule_id="0"
-        flScan=binding.barcodeScanner
+       // flScan=binding.barcodeScanner
         hideBottomBars(binding,true)
-        init()
+
         setPadding()
+
         setStatusBarColor()
         var commonRepository= CommonRepository(this,this)
         var scanModelFactories=  ScanViewModelFactory(commonRepository,this,this,this)
@@ -106,10 +109,10 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         scanViewModel= ViewModelProvider(this,scanModelFactories!!).get(ScanViewModel::class.java)
         binding.scanviewmodel=scanViewModel
         binding?.lifecycleOwner=this@FitpassScanQrCodeActivity
+        init()
         capture = CaptureManager(this, binding.barcodeScanner)
         capture!!.initializeFromIntent(intent, savedInstanceState)
         binding.barcodeScanner.decodeContinuous(callback)
-
         onCLick()
     }
     fun setStatusBarColor() {
@@ -120,24 +123,42 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     }
     fun init() {
         isFlashAvail =getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-        var faFlash = binding?.root?.findViewById<FontAwesome>(R.id.faFlash)
+         faFlash = binding?.root?.findViewById<FontAwesome>(R.id.faFlash)!!
         var faScanFromGallery = binding?.root?.findViewById<FontAwesome>(R.id.faScanFromGallery)
         var faRefreshLocation = binding?.root?.findViewById<FontAwesome>(R.id.faRefreshLocation)
         llFlash = binding?.root?.findViewById<LinearLayout>(R.id.llFlash)!!
         rlScanGalley = binding?.root?.findViewById<RelativeLayout>(R.id.rlScanGalley)!!
         llRefreshLocation = binding?.root?.findViewById<LinearLayout>(R.id.llRefreshLocation)!!
         tvScanGallery = binding?.root?.findViewById<TextView>(R.id.tvScanGallery)!!
-        flScan = binding?.root?.findViewById<FrameLayout>(R.id.flScan)!!
+        flScan = binding?.root?.findViewById<LinearLayout>(R.id.flScan)!!
         vf = binding?.root?.findViewById<ViewfinderView>(R.id.zxing_viewfinder_view)!!
         bv = binding?.root?.findViewById<BarcodeView>(R.id.zxing_barcode_surface)!!
-        Util.setFantIcon(faFlash!!, FontIconConstant.FLASH_ICON)
+        Util.setFantIcon(faFlash!!, FontIconConstant.FLASH_ICON_OFF)
         Util.setFantIcon(faRefreshLocation!!, FontIconConstant.REFERESH_LOC_ICON)
         Util.setFantIcon(faScanFromGallery!!, FontIconConstant.GALLEY_ICON)
         Util.setFantIcon(binding.faCross!!, FontIconConstant.CLOSE_ICON)
         if(!isFlashAvail){
             llFlash.visibility= View.GONE
         }
+       /* try {
+            if(intent.extras!!.getString("padding").equals("true")){
+                setPadding1()
+                binding.rlScanList.visibility=View.VISIBLE
+            }
+        }catch (e:Exception){
+
+        }*/
+        scanViewModel!!.scanWorkoutList.observe(this,{
+           if(scanViewModel!!.scanWorkoutList.value!!.size>0){
+             /*  finish()
+               var intent = Intent(this, FitpassScanQrCodeActivity::class.java)
+               intent.putExtra("padding","true")
+               startActivity(intent)*/
+           }
+        })
+
     }
+
     fun setPadding() {
         var fitpassConfig = FitpassConfig.getInstance()
         var paddingDp: Int = fitpassConfig!!.getPadding();
@@ -146,21 +167,36 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         binding.rlHeader.setPadding(paddingPixel, 0, paddingPixel, 0);
 
     }
+    fun setPadding1() {
 
+        var paddingDp: Int = 150;
+        var density = getResources().getDisplayMetrics().density.toFloat()
+        var paddingPixel = (paddingDp * density).toInt();
+        // FitpassScanQrCodeActivity.flScan.setPadding(0, 0, 0, paddingPixel);
+
+        var params = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.WRAP_CONTENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 0, 0, paddingPixel);
+         binding.flScan.setLayoutParams(params);
+        //  FitpassScanQrCodeActivity.bv.setLayoutParams(params);
+    }
     @RequiresApi(Build.VERSION_CODES.M)
     fun onCLick() {
         binding.rlCross.setOnClickListener {
             onBackPressed()
         }
         llFlash!!.setOnClickListener {
+
             if (isFlash) {
                 isFlash = false
                 binding.barcodeScanner.setTorchOn()
-
+                Util.setFantIcon(faFlash!!, FontIconConstant.FLASH_ICON_ON)
             } else {
                 isFlash = true
                 binding.barcodeScanner.setTorchOff()
-
+                Util.setFantIcon(faFlash!!, FontIconConstant.FLASH_ICON_OFF)
             }
         }
         rlScanGalley!!.setOnClickListener {
@@ -184,6 +220,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
 
         }
         binding.tvShowQrCode.setOnClickListener {
+            setCordinate()
             var intent=Intent(this,FitpassShowQrCodeActivity::class.java)
             intent.putExtra("user_schedule_id",user_schedule_id)
             intent.putExtra("latitude",latitude)
@@ -366,8 +403,9 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
 
     }
     fun getScanDetail(qrcode:String){
-         latitude="28.6139390"
-         longitude="77.20906]11"
+        /* latitude="28.6139390"
+         longitude="77.20906]11"*/
+        setCordinate()
         scanViewModel?.let {
             var request= JSONObject()
             //request.put("qr_code_string","de-2")
@@ -397,5 +435,9 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         this.position=position
         binding.llShowQr.visibility=View.VISIBLE
 
+    }
+    fun setCordinate(){
+        latitude= FitpassPrefrenceUtil.getStringPrefs(this,FitpassPrefrenceUtil.LATITUDE,"0.0").toString()
+        longitude=FitpassPrefrenceUtil.getStringPrefs(this,FitpassPrefrenceUtil.LONGITUDE,"0.0").toString()
     }
 }

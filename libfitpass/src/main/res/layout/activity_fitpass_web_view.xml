@@ -11,9 +11,10 @@
         android:orientation="vertical"
         >
         <RelativeLayout
+            android:id="@+id/rlHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/tvHeader"
@@ -27,7 +28,8 @@
                 android:text="Fitpass"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                />
             <com.fitpass.libfitpass.fontcomponent.FontAwesome
                 android:id="@+id/tvBack"
                 intfonticon="@{FontIconConstant.INSTANCE.ARROW_BACK_ICON}"

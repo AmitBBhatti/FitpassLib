@@ -10,5 +10,6 @@ data class SliderActivity(
     val macros_details: ArrayList<MacrosDetail>,
     val text_message: String,
     val today_calorie_taken: TodayCalorieTaken,
-    val url: String
+    val url: String,
+    val show_header: Boolean
 )
