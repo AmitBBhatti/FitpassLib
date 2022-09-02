@@ -132,6 +132,7 @@ object Util {
         }
         return encrptData
     }
+
      fun getWorkoutImage(imageId: Int): String {
          return when (imageId) {
              1 -> "e901"
@@ -156,4 +157,14 @@ object Util {
              else -> "e91f"
          }
      }
+
+    fun isHexColor(colorCode:String):Boolean{
+        try {
+            val color: Int = Color.parseColor(colorCode)
+            return true
+        } catch (iae: IllegalArgumentException) {
+            // This color string is not valid
+            return false
+        }
+    }
 }

@@ -7,7 +7,9 @@ class FitpassConfig {
     var padding:Int=16
     @JvmName("setHeaderFontColor1")
     fun setHeaderFontColor(headerFontColor:String){
-        this.headerFontColor=headerFontColor
+        if(Util.isHexColor(headerFontColor)) {
+            this.headerFontColor = headerFontColor
+        }
 
     }
     @JvmName("getHeaderFontColor1")
@@ -17,7 +19,10 @@ class FitpassConfig {
 
     @JvmName("setheaderColor1")
     fun setHeaderColor(headerColor:String){
-        this.headerColor=headerColor
+        if(Util.isHexColor(headerColor)){
+            this.headerColor=headerColor
+        }
+
 
     }
     @JvmName("getheaderColor1")
@@ -36,7 +41,7 @@ class FitpassConfig {
     }
     @JvmName("setPadding1")
     fun setPadding(padding:Int){
-        if(padding>0){
+        if(padding>=5&&padding<=30){
             this.padding=padding
         }
 

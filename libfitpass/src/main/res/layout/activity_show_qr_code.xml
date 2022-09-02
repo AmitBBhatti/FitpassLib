@@ -28,8 +28,8 @@
                 android:id="@+id/llDetail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingHorizontal="16dp"
-                android:layout_marginTop="34dp">
+                android:layout_marginTop="34dp"
+                android:paddingHorizontal="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -52,21 +52,21 @@
                         android:layout_width="125dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:visibility="gone"
-                        android:src="@drawable/fp_register_ic" />
-
-                    <LinearLayout
+                        android:src="@drawable/fp_register_ic"
+                        android:visibility="gone" />
+                     <LinearLayout
                         android:id="@+id/llQrcode"
                         android:layout_width="match_parent"
+                        android:orientation="vertical"
                         android:layout_height="265dp"
                         android:background="@drawable/white_shape3">
 
                         <ImageView
                             android:id="@+id/qrCodeImage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="1dp"
-                             />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="1dp"
+                           />
 
                     </LinearLayout>
 
@@ -74,26 +74,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginTop="16dp"
                         android:background="@drawable/white_shape"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="20dp">
 
                         <ImageView
                             android:id="@+id/ivLogo"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_margin="5dp"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
                             android:scaleType="fitXY"
                             android:src="@drawable/placeholder" />
 
                         <View
                             android:layout_width="0.5dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="2dp"
                             android:background="@color/grey1" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginLeft="9dp"
                             android:orientation="vertical"
                             android:paddingTop="6dp"
@@ -113,12 +116,12 @@
                                 android:id="@+id/tvAddress"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2.5dp"
+                                android:layout_marginTop="1.8dp"
                                 android:fontFamily="@font/spf_prodisplay_regular"
                                 android:includeFontPadding="false"
-                                android:text="Malviya Nagar,Delhi"
                                 android:textColor="@color/black1"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                tools:text="Malviya Nagar,Delhi" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -139,14 +142,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:textSize="39dp"
-                                android:textColor="@color/pink1"/>
+                                android:textColor="@color/pink1"
+                                android:textSize="35dp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="9dp"
                             android:layout_marginTop="10dp"
                             android:layout_toRightOf="@+id/llWorkoutImage"
                             android:orientation="vertical">

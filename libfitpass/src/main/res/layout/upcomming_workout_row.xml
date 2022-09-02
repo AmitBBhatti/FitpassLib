@@ -91,7 +91,7 @@
                                 android:fontFamily="@font/sf_pro_display_semi_bold_italic"
                                 android:textColor="@color/green"
                                 android:textSize="12sp"
-                                tools:text="Ongoing workout" />
+                                tools:text="Ongoing workout " />
 
                         </LinearLayout>
 
@@ -156,8 +156,8 @@
                     android:background="@drawable/white_shape"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility='@{workoutdata.data.workout_status.equals("3")?View.GONE:View.VISIBLE}'>
-
+                    android:visibility='@{workoutdata.data.workout_status.equals("3")?View.GONE:View.VISIBLE}'
+                    >
                     <com.fitpass.libfitpass.fontcomponent.FontAwesome
                         intfonticon="@{FontIconConstant.INSTANCE.SCAN_ICON}"
                         android:layout_width="36dp"
@@ -248,6 +248,7 @@
                         <!--android:visibility='@{workoutdata.data.workout_status.equals("3")?View.GONE:View.VISIBLE}'-->
 
                         <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                            android:id="@+id/faDirection"
                             intfonticon="@{FontIconConstant.INSTANCE.DIRECTION_ICON}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

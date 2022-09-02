@@ -2,16 +2,17 @@ package com.fitpass.libfitpass.home
 
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,16 +20,18 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.fitpass.libfitpass.R
+import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.utilities.*
 import com.fitpass.libfitpass.databinding.ActivityFitPassDashboardBinding
 import com.fitpass.libfitpass.home.http_client.CommonRepository
 import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.Product
+import com.fitpass.libfitpass.home.models.SliderActivity
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 import com.fitpass.libfitpass.home.viewmodelfactory.HomeViewModelFactory
 import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
+import com.google.gson.Gson
 import org.json.JSONObject
-import java.lang.Exception
 import java.util.*
 
 class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
@@ -39,12 +42,18 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
     var weburl: String = ""
     var message: String = ""
     var show_header: Boolean = true
+   // lateinit var sliderWorkoutata:SliderActivity
+    var workoutdata=""
+    val slideractivitylist = ArrayList<SliderActivity>()
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_fit_pass_dashboard)
+        binding.rlAlert.visibility= View.GONE
+        FitpassPrefrenceUtil.setBooleanPrefs(this, FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,true)
         setHeader()
+
         binding.tvWishMesg.setText(getWishMessage())
         /* var fm=supportFragmentManager
          var ft:FragmentTransaction=fm.beginTransaction()
@@ -64,19 +73,58 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         homeViewModel = ViewModelProvider(this, viewModelFactories!!).get(HomeViewModel::class.java)
         binding.lifecycleOwner = this
         binding.homedata = homeViewModel
-        homeViewModel?.let {
-            var request = JSONObject()
-            request.put("vendor_id", "183")
-            request.put("policy_number", "11111111113111")
-            request.put("member_id", "15143512435")
-            // it.getHomeData(Request("15143512435","11111111113111","183"))
-            it.getHomeData(request)
-        }
+
         binding.llScan.setOnClickListener {
+            workoutdata=""
+            if(slideractivitylist.size==1){
+                if(!slideractivitylist.get(1).data.workout_status.equals("3")){
+                    var gson=Gson()
+                    workoutdata=gson.toJson(slideractivitylist.get(1))
+                }
+            }
             checkPermission()
         }
-    }
+        homeViewModel!!.sliderList.observe(this,{
+            slideractivitylist.clear()
+            for (data in it) {
+                if (data.action.equals(ConfigConstants.WORKOUT_ACTION)) {
+                    slideractivitylist.add(data)
+                }
+            }
 
+        })
+    }
+    override fun onStart() {
+        super.onStart()
+        binding.rlAlert.visibility=View.GONE
+        val manager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsAlert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
+        }
+        if(FitpassPrefrenceUtil.getBooleanPrefs(this,FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,false)){
+            FitpassPrefrenceUtil.setBooleanPrefs(this,FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,false)
+            homeViewModel?.let {
+                var request = JSONObject()
+                request.put("vendor_id", "183")
+                request.put("policy_number", "11111111113111")
+                request.put("member_id", "15143512435")
+                // it.getHomeData(Request("15143512435","11111111113111","183"))
+                it.getHomeData(request)
+            }
+        }
+
+    }
+    fun gpsAlert(title: String, msg: String) {
+        binding.rlAlert.visibility=View.VISIBLE
+        binding.alertpopup.tvTitle.setText(title)
+        binding.alertpopup.tvMsg.setText(msg)
+        binding.alertpopup.tvCancel.setOnClickListener {
+           onBackPressed()
+        }
+        binding.alertpopup.tvSetting.setOnClickListener {
+            startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+    }
     fun getWishMessage(): String {
         val c: Calendar = Calendar.getInstance()
         val timeOfDay: Int = c.get(Calendar.HOUR_OF_DAY)
@@ -169,21 +217,22 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert(resources.getString(R.string.cameramsg))
+                alert(resources.getString(R.string.turnoncamera),resources.getString(R.string.cameramsg))
+
             } else if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert(resources.getString(R.string.locationmsg))
+                alert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
             } else if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert(resources.getString(R.string.locationmsg))
+                alert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("onRequestResult", "PERMISSION_GRANTED")
                 openScanActivity()
@@ -196,13 +245,13 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_DENIED
             ) {
-                alert(resources.getString(R.string.locationmsg))
+                alert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
             } else if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_DENIED
             ) {
-                alert(resources.getString(R.string.locationmsg))
+                alert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("onRequestResult", "PERMISSION_GRANTED")
                 FitpassLocationUtil.refreshLocation(this)
@@ -213,45 +262,42 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
     }
 
     fun openScanActivity() {
+
         var intent = Intent(this, FitpassScanQrCodeActivity::class.java)
+        if(!workoutdata.isNullOrEmpty()){
+            intent.putExtra("sliderWorkoutata",workoutdata)
+        }
         startActivity(intent)
     }
 
 
-    fun alert(msg: String) {
-        val builder1 = AlertDialog.Builder(this)
-        builder1.setMessage(msg)
-        builder1.setCancelable(false)
-        builder1.setPositiveButton(
-            "Yes"
-        ) { dialog, id ->
+    fun alert(title: String, msg: String) {
+        binding.rlAlert.visibility=View.VISIBLE
+        binding.alertpopup.tvTitle.setText(title)
+        binding.alertpopup.tvMsg.setText(msg)
+        binding.alertpopup.tvCancel.setOnClickListener {
+            binding.rlAlert.visibility=View.GONE
+        }
+        binding.alertpopup.tvSetting.setOnClickListener {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             val uri = Uri.fromParts("package", this.packageName, null)
             intent.data = uri
             startActivity(intent)
         }
-        builder1.setNegativeButton(
-            "No"
-        ) { dialog, id -> onBackPressed() }
-        val alert11 = builder1.create()
-        alert11.show()
-
 
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onScanClick() {
+    override fun onScanClick(item: SliderActivity) {
+        var gson=Gson()
+        workoutdata=gson.toJson(item)
         checkPermission()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onMenuClick(data: Product) {
         weburl = data.redircet_url
-        Log.d("show_header", show_header.toString())
-
         this.show_header = data.show_header
-
-        Log.d("show_header", show_header.toString())
         if (data.location_permission) {
             checkLocationPermission(true)
         } else {

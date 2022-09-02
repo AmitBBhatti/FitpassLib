@@ -32,6 +32,7 @@ public class ApiClient {
     }*/
 
     public static Retrofit getApiClient(Context mContext,int paraCount ) {
+
         context = mContext;
         parameterCount = paraCount;
         Retrofit retrofit = null;

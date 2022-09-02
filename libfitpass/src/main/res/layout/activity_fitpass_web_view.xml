@@ -24,12 +24,13 @@
                 android:fontFamily="@font/spf_pro_display_bold"
                 android:gravity="center"
                 android:letterSpacing="0.15"
-                android:padding="18dp"
+                android:paddingVertical="18dp"
+                android:paddingHorizontal="50dp"
                 android:text="Fitpass"
+                android:maxLines="1"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp" />
             <com.fitpass.libfitpass.fontcomponent.FontAwesome
                 android:id="@+id/tvBack"
                 intfonticon="@{FontIconConstant.INSTANCE.ARROW_BACK_ICON}"

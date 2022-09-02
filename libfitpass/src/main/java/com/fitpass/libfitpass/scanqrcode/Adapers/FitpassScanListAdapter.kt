@@ -76,8 +76,7 @@ class FitpassScanListAdapter(
             holder.binding.tvWorkoutStatus.visibility = View.GONE
             holder.binding.llScanHelp.visibility = View.VISIBLE
             if (!list.value!!.get(position).activity_id.isNullOrEmpty()) {
-                holder.binding.faIcon.setText(
-                    Util.getWorkoutImage(list.value!!.get(position).activity_id!!.toInt()).toInt(16)
+                holder.binding.faIcon.setText(Util.getWorkoutImage(list.value!!.get(position).activity_id!!.toInt()).toInt(16)
                         .toChar().toString()
                 )
             }

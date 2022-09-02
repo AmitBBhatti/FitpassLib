@@ -1,5 +1,6 @@
 package com.fitpass.libfitpass.home.adapters
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ class FaqAdapter (val homeViewModel: HomeViewModel): RecyclerView.Adapter<FaqAda
     override  fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.faqdata=list.value!!.get(position)
         holder.binding.homeData=homeViewModel
+        holder.binding.tvDes.setText(Html.fromHtml(list!!.value!!.get(position).answer))
         Util.setimage(holder.binding.tvArrow,FontIconConstant.ARROW_DOWN)
         holder.binding.rlHeader.setOnClickListener {
             if(holder.binding.tvDes.visibility== View.GONE){

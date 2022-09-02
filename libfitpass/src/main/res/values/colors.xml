@@ -29,6 +29,7 @@
     <color name="lightpink">#ffebf5</color>
     <color name="transparent">#00ffffff</color>
     <color name="transparentNew">#00000000</color>
+    <color name="transparent3">#80000000</color>
     <color name="watermelon_two">#ef4c4f</color>
     <color name="transparent2">#dfdedf</color>
     <color name="color_scan_start">#d92a5c</color>

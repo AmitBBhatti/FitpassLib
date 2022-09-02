@@ -44,7 +44,8 @@
                     android:layout_marginRight="20dp"
                     android:text="@{faqdata.question}"
                     android:textColor="@color/black1"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sf_pro_display_semi_bold"/>
             </RelativeLayout>
 
             <TextView
@@ -55,7 +56,6 @@
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/spf_prodisplay_regular"
                 android:lineSpacingExtra="1dp"
-                android:text="@{faqdata.answer}"
                 android:textColor="@color/grey1"
                 android:textSize="12sp"
                 android:visibility="gone" />

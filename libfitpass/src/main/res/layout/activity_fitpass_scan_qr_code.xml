@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="android.view.View" />
+
         <variable
             name="scanviewmodel"
             type="com.fitpass.libfitpass.scanqrcode.viewmodel.ScanViewModel" />
@@ -89,72 +90,141 @@
                 android:visibility="visible"/>
         </RelativeLayout>
 
-       <RelativeLayout
-           android:id="@+id/rlScanList"
-           android:layout_width="wrap_content"
-           android:layout_height="match_parent"
-           android:layout_below="@+id/llShowQr"
-           android:layout_marginTop="5dp"
-           android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}"
-          >
-           <!-- android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}"-->
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_alignParentBottom="true"
-               android:orientation="vertical"
-               >
-               <LinearLayout
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:background="@drawable/gray_bg"
-                   android:orientation="vertical"
-                   android:paddingVertical="10dp">
+        <RelativeLayout
+            android:id="@+id/rlScanList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llShowQr"
+            android:layout_marginTop="5dp"
+            android:visibility="visible">
+            <!-- android:visibility="@{scanviewmodel.scanWorkoutList.size()>0?View.VISIBLE:View.GONE}"-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
 
-                   <TextView
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:layout_marginLeft="16dp"
-                       android:layout_marginTop="3dp"
-                       android:fontFamily="@font/spf_prodisplay_regular"
-                       android:includeFontPadding="false"
-                       android:textColor="@color/black1"
-                       android:textSize="12sp"
-                       android:text="Your reservations" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gray_bg"
+                    android:orientation="vertical"
+                    android:paddingVertical="10dp">
 
-                   <TextView
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:layout_marginLeft="16dp"
-                       android:layout_marginTop="2.5dp"
-                       android:fontFamily="@font/spf_pro_display_bold"
-                       android:includeFontPadding="false"
-                       android:textColor="@color/black1"
-                       android:textSize="16sp"
-                       textdata="@{scanviewmodel.scanWorkOutResults.studio_name}"
-                       tools:text="Gold’s Gym Malviya nagar " />
-               </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="@font/spf_prodisplay_regular"
+                        android:includeFontPadding="false"
+                        android:text="Your reservations"
+                        android:textColor="@color/black1"
+                        android:textSize="12sp" />
 
-               <androidx.recyclerview.widget.RecyclerView
-                   android:layout_width="match_parent"
-                   android:layout_height="120dp"
-                   android:orientation="vertical"
-                   tools:itemCount="2"
-                   app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                   tools:listitem="@layout/workoutscan_row"
-                   scanItems="@{scanviewmodel.scanWorkoutList}"
-                   scanViewmodel="@{scanviewmodel.scanViewModel}"
-                   fitpassScanListener="@{scanviewmodel.fitpassScanListener}"
-                   />
+                    <TextView
+                        android:id="@+id/tvStudioName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="2.5dp"
+                        android:fontFamily="@font/spf_pro_display_bold"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/black1"
+                        android:textSize="16sp"
+                        tools:text="Gold’s Gym Malviya nagar " />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvWorkout"
+                    fitpassScanListener="@{scanviewmodel.fitpassScanListener}"
+                    scanItems="@{scanviewmodel.scanWorkoutList}"
+                    scanViewmodel="@{scanviewmodel.scanViewModel}"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/workoutscan_row" />
+
+                <RelativeLayout
+                    android:id="@+id/rlWorkout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="10dp"
+                    android:visibility="visible">
+
+                    <RelativeLayout
+                        android:id="@+id/rlIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp">
+
+                        <com.fitpass.libfitpass.fontcomponent.FontAwesome
+                            android:id="@+id/faIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:textColor="@color/white"
+                            android:textSize="35dp" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/rlIcon"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tvWorkoutName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/spf_pro_display_bold"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/black1"
+                            android:textSize="14sp"
+                            tools:text="Workout" />
+
+                        <TextView
+                            android:id="@+id/tvWorkoutStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:fontFamily="@font/spf_prodisplay_regular"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/green"
+                            android:textSize="10sp"
+                            android:visibility="visible"
+                            android:text="Workout scanning in progress" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/llScanHelp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
 
 
-           </LinearLayout>
 
-       </RelativeLayout>
-
-
-
-
+        <RelativeLayout
+            android:id="@+id/rlAlert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+           >
+            <include android:id="@+id/alertpopup"
+                layout="@layout/alert_popup"/>
+        </RelativeLayout>
 
     </RelativeLayout>
 </layout>

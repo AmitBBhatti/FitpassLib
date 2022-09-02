@@ -15,6 +15,7 @@ import com.fitpass.libfitpass.base.customview.RetryListener
 import com.fitpass.libfitpass.base.dataencription.RandomKeyGenrator
 import com.fitpass.libfitpass.base.http_client.CustomLoader
 import com.fitpass.libfitpass.base.utilities.FitpassConfig
+import com.fitpass.libfitpass.base.utilities.FitpassPrefrenceUtil
 import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.home.http_client.ApiConstants
 import com.google.gson.Gson
@@ -86,9 +87,12 @@ class ScanViewModel(
             gson.fromJson(jsonObject.toString(), FitpassScanResponse::class.java)
         viewModelScope.launch {
             if (isAttend) {
-                FitpassScanQrCodeActivity.user_schedule_id="0"
+                //FitpassScanQrCodeActivity.user_schedule_id="0"
                 FitpassScanQrCodeActivity.tvStatus.setText(response.message)
-                FitpassScanQrCodeActivity.llScanHelp.visibility = View.GONE
+                if( FitpassScanQrCodeActivity.llScanHelp!=null){
+                    FitpassScanQrCodeActivity.llScanHelp.visibility = View.GONE
+                }
+                FitpassPrefrenceUtil.setBooleanPrefs(context, FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,true)
                 FitpassScanQrCodeActivity.rlIcon.background = Util.drawRectRadious("#51d071")
                 Util.setFantIcon(FitpassScanQrCodeActivity.faIcon, FontIconConstant.ACTIVE_ICON)
             } else {

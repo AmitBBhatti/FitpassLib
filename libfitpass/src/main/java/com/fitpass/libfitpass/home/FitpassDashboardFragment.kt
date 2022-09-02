@@ -26,6 +26,7 @@ import com.fitpass.libfitpass.databinding.FragmentHomeBinding
 import com.fitpass.libfitpass.home.http_client.CommonRepository
 import com.fitpass.libfitpass.home.listeners.FitpassHomeListener
 import com.fitpass.libfitpass.home.models.Product
+import com.fitpass.libfitpass.home.models.SliderActivity
 import com.fitpass.libfitpass.home.viewmodel.HomeViewModel
 import com.fitpass.libfitpass.home.viewmodelfactory.HomeViewModelFactory
 import org.json.JSONObject
@@ -133,7 +134,7 @@ class HomeFragment : Fragment(), FitpassHomeListener{
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onScanClick() {
+    override fun onScanClick(item:SliderActivity) {
         checkPermission()
     }
 

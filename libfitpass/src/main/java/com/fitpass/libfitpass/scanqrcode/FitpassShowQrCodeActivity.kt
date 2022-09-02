@@ -111,8 +111,8 @@ class FitpassShowQrCodeActivity : AppCompatActivity() {
             var density = getResources().getDisplayMetrics().density.toFloat()
             var paddingPixel = (paddingDp * density).toInt();
             securityCode = Util.encrptDataWithSecretekey(this,textToSend.toString()).toString()
-            //var width=
             val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, screenWidth-paddingPixel ,screenWidth-paddingPixel)
+           // val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, screenWidth-paddingPixel ,500)
             val barcodeEncoder: BarcodeEncoder = BarcodeEncoder()
             val bitmap: Bitmap = barcodeEncoder.createBitmap(bitMatrix)
             binding?.qrCodeImage?.setImageBitmap(bitmap)

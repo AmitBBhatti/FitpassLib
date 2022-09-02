@@ -158,17 +158,17 @@ class HomeViewModel(
     private fun setupPagerIndidcatorDots(selectedPos: Int) {
         llDots.removeAllViews()
         var density = context.getResources().getDisplayMetrics().density.toFloat()
-        var paddingPixel10 = (4 * density).toInt();
+        var paddingPixel4 = (4 * density).toInt();
         var paddingPixel46 = (46 * density).toInt();
-        var paddingPixel5 = (5 * density).toInt();
+        var paddingPixel5 = (2 * density).toInt();
         for (i in 0 until sliderList.value!!.size) {
             var imageView = ImageView(context)
             val params1: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                paddingPixel10, paddingPixel10
+                paddingPixel4, paddingPixel4
             )
             params1.setMargins(paddingPixel5, 0, paddingPixel5, 0)
             val params2: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-                paddingPixel46, paddingPixel10
+                paddingPixel46, paddingPixel4
             )
             params2.setMargins(paddingPixel5, 0, paddingPixel5, 0)
             if (i == selectedPos) {

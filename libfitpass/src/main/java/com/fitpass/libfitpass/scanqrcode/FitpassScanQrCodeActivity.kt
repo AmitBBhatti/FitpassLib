@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -33,8 +34,10 @@ import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.ActivityFitpassScanQrCodeBinding
 import com.fitpass.libfitpass.fontcomponent.FontAwesome
 import com.fitpass.libfitpass.home.http_client.CommonRepository
+import com.fitpass.libfitpass.home.models.SliderActivity
 import com.fitpass.libfitpass.scanqrcode.listeners.FitpassScanListener
 import com.fitpass.libfitpass.scanqrcode.models.Workout
+import com.google.gson.Gson
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.journeyapps.barcodescanner.*
@@ -42,7 +45,7 @@ import org.json.JSONObject
 import java.io.InputStream
 
 
-class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
+class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
     var CAMERA_REQUEST_CODE: Int = 100
     var LOCATION_REQUEST_CODE: Int = 100
     var PICK_IMAGE_FROM_GALLERY: Int = 100
@@ -53,64 +56,72 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     lateinit var rlScanGalley: RelativeLayout
     lateinit var llRefreshLocation: LinearLayout
     lateinit var tvScanGallery: TextView
-    lateinit var faFlash : FontAwesome
+    lateinit var faFlash: FontAwesome
     var isFlash: Boolean = true
     var isFlashAvail: Boolean = true
-
     var workout_name: String = ""
     var start_time: String = ""
     var security_code: String = ""
-    var latitude=""
-    var longitude=""
-    private lateinit var studioLogo:String
-    private lateinit var studioName:String
-    private lateinit var address:String
-    private lateinit var activityId:String
-    private var scanViewModel: ScanViewModel?=null
-    var position:Int=0
-    var isGalleyOpen:Boolean=false
-    companion object{
+    var latitude = ""
+    var longitude = ""
+    var studioLogo: String = ""
+    var studioName: String = ""
+    var address: String = ""
+    private lateinit var activityId: String
+    private var scanViewModel: ScanViewModel? = null
+    var position: Int = 0
+    var isGalleyOpen: Boolean = false
+    lateinit var workoutdata: SliderActivity
+
+    companion object {
         var user_schedule_id: String = "0"
-        lateinit var tvStatus:TextView
-        lateinit var llScanHelp:LinearLayout
-        lateinit var rlIcon:RelativeLayout
-        lateinit var faIcon:FontAwesome
+        lateinit var tvStatus: TextView
+        lateinit var llScanHelp: LinearLayout
+        lateinit var rlIcon: RelativeLayout
+        lateinit var faIcon: FontAwesome
         lateinit var flScan: LinearLayout
         lateinit var vf: ViewfinderView
         lateinit var bv: BarcodeView
 
     }
-    private fun hideBottomBars(newScannerBinding:ActivityFitpassScanQrCodeBinding?,fullScreen: Boolean) {
+
+    private fun hideBottomBars(
+        newScannerBinding: ActivityFitpassScanQrCodeBinding?,
+        fullScreen: Boolean
+    ) {
         val decorView = window.decorView
-        decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR  or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-        newScannerBinding?.rlDetail!!.fitsSystemWindows=true
+        decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        newScannerBinding?.rlDetail!!.fitsSystemWindows = true
     }
-    fun hideTitleBar(){
+
+    fun hideTitleBar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideTitleBar()
         setCordinate()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_fitpass_scan_qr_code)
-        user_schedule_id="0"
-       // flScan=binding.barcodeScanner
-        hideBottomBars(binding,true)
-
+        binding.rlAlert.visibility=View.GONE
+        binding.rlScanList.visibility = View.GONE
+        user_schedule_id = "0"
+        hideBottomBars(binding, true)
         setPadding()
-
         setStatusBarColor()
-        var commonRepository= CommonRepository(this,this)
-        var scanModelFactories=  ScanViewModelFactory(commonRepository,this,this,this)
-        binding.lifecycleOwner=this
-        scanViewModel= ViewModelProvider(this,scanModelFactories!!).get(ScanViewModel::class.java)
-        binding.scanviewmodel=scanViewModel
-        binding?.lifecycleOwner=this@FitpassScanQrCodeActivity
+        var commonRepository = CommonRepository(this, this)
+        var scanModelFactories = ScanViewModelFactory(commonRepository, this, this, this)
+        binding.lifecycleOwner = this
+        scanViewModel = ViewModelProvider(this, scanModelFactories!!).get(ScanViewModel::class.java)
+        binding.scanviewmodel = scanViewModel
+        binding?.lifecycleOwner = this@FitpassScanQrCodeActivity
         init()
         capture = CaptureManager(this, binding.barcodeScanner)
         capture!!.initializeFromIntent(intent, savedInstanceState)
@@ -124,8 +135,8 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         }
     }
     fun init() {
-        isFlashAvail =getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-         faFlash = binding?.root?.findViewById<FontAwesome>(R.id.faFlash)!!
+        isFlashAvail = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        faFlash = binding?.root?.findViewById<FontAwesome>(R.id.faFlash)!!
         var faScanFromGallery = binding?.root?.findViewById<FontAwesome>(R.id.faScanFromGallery)
         var faRefreshLocation = binding?.root?.findViewById<FontAwesome>(R.id.faRefreshLocation)
         llFlash = binding?.root?.findViewById<LinearLayout>(R.id.llFlash)!!
@@ -139,25 +150,67 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         Util.setFantIcon(faRefreshLocation!!, FontIconConstant.REFERESH_LOC_ICON)
         Util.setFantIcon(faScanFromGallery!!, FontIconConstant.GALLEY_ICON)
         Util.setFantIcon(binding.faCross!!, FontIconConstant.CLOSE_ICON)
-        if(!isFlashAvail){
-            llFlash.visibility= View.GONE
+        if (!isFlashAvail) {
+            llFlash.visibility = View.GONE
         }
-       /* try {
-            if(intent.extras!!.getString("padding").equals("true")){
-                setPadding1()
-                binding.rlScanList.visibility=View.VISIBLE
-            }
-        }catch (e:Exception){
+        /* try {
+             if(intent.extras!!.getString("padding").equals("true")){
+                 setPadding1()
+                 binding.rlScanList.visibility=View.VISIBLE
+             }
+         }catch (e:Exception){
 
-        }*/
-        scanViewModel!!.scanWorkoutList.observe(this,{
-           if(scanViewModel!!.scanWorkoutList.value!!.size>0){
-             /*  finish()
-               var intent = Intent(this, FitpassScanQrCodeActivity::class.java)
-               intent.putExtra("padding","true")
-               startActivity(intent)*/
-           }
+         }*/
+        scanViewModel!!.scanWorkOutResults.observe(this, {
+            if (it!!.workout_list!!.size > 0) {
+                binding.tvStudioName.setText(it.studio_name)
+                binding.rlScanList.visibility = View.VISIBLE
+                binding.rlWorkout.visibility = View.GONE
+
+            } else {
+                binding.rlScanList.visibility = View.GONE
+            }
         })
+        if (intent.extras != null) {
+            if (intent.extras!!.containsKey("sliderWorkoutata")) {
+                var gson = Gson()
+                workoutdata = gson.fromJson(
+                    intent.extras!!.getString("sliderWorkoutata"),
+                    SliderActivity::class.java
+                )
+                binding.tvWorkoutName.setText(workoutdata.data.workout_name)
+                binding.tvStudioName.setText(workoutdata.data.studio_name)
+                activityId = workoutdata.data.activity_id
+                binding.rlIcon.background = Util.drawRectRadious("#51d071")
+                if (!activityId.isNullOrEmpty()) {
+                    binding.faIcon.setText(
+                        Util.getWorkoutImage(activityId!!.toInt()).toInt(16).toChar().toString()
+                    )
+                }
+                user_schedule_id = workoutdata.data.user_schedule_id
+                workout_name = workoutdata.data.workout_name
+                start_time = workoutdata.data.start_time.toString()
+                security_code = workoutdata.data.security_code
+                activityId = workoutdata.data.activity_id
+                studioName = workoutdata.data.studio_name
+                studioLogo = workoutdata.data.studio_logo
+                address = workoutdata.data.address
+                binding.rlScanList.visibility = View.VISIBLE
+                binding.rvWorkout.visibility = View.GONE
+                binding.llShowQr.visibility = View.VISIBLE
+                binding.rlWorkout.visibility = View.VISIBLE
+                tvStatus = binding.tvWorkoutStatus
+                rlIcon = binding.rlIcon
+                faIcon = binding.faIcon
+                llScanHelp = binding.llScanHelp
+                Log.d("activityId", activityId.toString())
+            } else {
+                binding.rlScanList.visibility = View.GONE
+                binding.rlWorkout.visibility = View.GONE
+
+            }
+
+        }
 
     }
 
@@ -169,6 +222,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         binding.rlHeader.setPadding(paddingPixel, 0, paddingPixel, 0);
 
     }
+
     fun setPadding1() {
 
         var paddingDp: Int = 150;
@@ -181,9 +235,10 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             RelativeLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, 0, 0, paddingPixel);
-         binding.flScan.setLayoutParams(params);
+        binding.flScan.setLayoutParams(params);
         //  FitpassScanQrCodeActivity.bv.setLayoutParams(params);
     }
+
     @RequiresApi(Build.VERSION_CODES.M)
     fun onCLick() {
         binding.rlCross.setOnClickListener {
@@ -209,42 +264,69 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             openGallery()
         }
         llRefreshLocation!!.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(
-                    arrayOf(
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_REQUEST_CODE
-                )
-            }else{
-                Log.d("checkPermission","grant")
-                FitpassLocationUtil.refreshLocation(this)
+            val manager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                gpsAlert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
+            }else {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermissions(
+                        arrayOf(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ),
+                        LOCATION_REQUEST_CODE
+                    )
+                } else {
+                    Log.d("checkPermission", "grant")
+                    FitpassLocationUtil.refreshLocation(this)
+                }
             }
+            Handler().postDelayed(Runnable{
+                Toast.makeText(this,"Lat:"+FitpassPrefrenceUtil.getStringPrefs(this,FitpassPrefrenceUtil.LATITUDE,"0.0")+" Long:"+
+                        FitpassPrefrenceUtil.getStringPrefs(this,FitpassPrefrenceUtil.LATITUDE,"0.0"),Toast.LENGTH_LONG).show()
+            },2000)
 
         }
         binding.tvShowQrCode.setOnClickListener {
             setCordinate()
-            var intent=Intent(this,FitpassShowQrCodeActivity::class.java)
-            intent.putExtra("user_schedule_id",user_schedule_id)
-            intent.putExtra("latitude",latitude)
-            intent.putExtra("longitude",longitude)
-            intent.putExtra("workout_name",workout_name)
-            intent.putExtra("start_time",start_time)
-            intent.putExtra("security_code",security_code)
-            intent.putExtra("studio_logo",studioLogo)
-            intent.putExtra("studio_name",studioName)
-            intent.putExtra("address",address)
-            intent.putExtra("activity_id",activityId)
+            var intent = Intent(this, FitpassShowQrCodeActivity::class.java)
+            intent.putExtra("user_schedule_id", user_schedule_id)
+            intent.putExtra("latitude", latitude)
+            intent.putExtra("longitude", longitude)
+            intent.putExtra("workout_name", workout_name)
+            intent.putExtra("start_time", start_time)
+            intent.putExtra("security_code", security_code)
+            intent.putExtra("studio_logo", studioLogo)
+            intent.putExtra("studio_name", studioName)
+            intent.putExtra("address", address)
+            intent.putExtra("activity_id", activityId)
             startActivity(intent)
         }
     }
-
-
+    fun gpsAlert(title: String, msg: String) {
+        binding.rlAlert.visibility=View.VISIBLE
+        binding.alertpopup.tvTitle.setText(title)
+        binding.alertpopup.tvMsg.setText(msg)
+        binding.alertpopup.tvCancel.setOnClickListener {
+            binding.rlAlert.visibility=View.GONE
+        }
+        binding.alertpopup.tvSetting.setOnClickListener {
+            startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onStart() {
         super.onStart()
         checkPermission()
+        binding.rlAlert.visibility=View.GONE
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -261,7 +343,6 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     }
 
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
@@ -269,15 +350,15 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     ) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("onRequestResult","onRequestPermissionsResult")
+        Log.d("onRequestResult", "onRequestPermissionsResult")
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert("We need to allow the camera permission to scan the QR Code. Do you want to allow it.")
+                alert(resources.getString(R.string.turnoncamera),resources.getString(R.string.cameramsg))
             }
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("onRequestResult","PERMISSION_GRANTED")
+                Log.d("onRequestResult", "PERMISSION_GRANTED")
                 capture!!.onResume()
             } else {
             }
@@ -286,38 +367,53 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert("We need to allow the location permission. Do you want to allow it.")
+                alert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
             }
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_DENIED
             ) {
-                alert("We need to allow the location permission. Do you want to allow it.")
+                alert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
             }
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("onRequestResult","PERMISSION_GRANTED")
-               FitpassLocationUtil.refreshLocation(this)
+                Log.d("onRequestResult", "PERMISSION_GRANTED")
+                FitpassLocationUtil.refreshLocation(this)
             } else {
             }
         }
     }
 
-    fun alert(msg:String) {
-        val builder1 = AlertDialog.Builder(this)
+    fun alert(title: String, msg: String) {
+        binding.rlAlert.visibility=View.VISIBLE
+        binding.alertpopup.tvTitle.setText(title)
+        binding.alertpopup.tvMsg.setText(msg)
+        binding.alertpopup.tvCancel.setOnClickListener {
+            binding.rlAlert.visibility=View.GONE
+        }
+        binding.alertpopup.tvSetting.setOnClickListener {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", this.packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
+       /* val builder1 = AlertDialog.Builder(this)
+        builder1.setTitle(title)
         builder1.setMessage(msg)
         builder1.setCancelable(false)
         builder1.setPositiveButton(
-            "Yes"
+            "Settings"
         ) { dialog, id ->
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", packageName, null)
+            val uri = Uri.fromParts("package", this.packageName, null)
             intent.data = uri
             startActivity(intent)
         }
         builder1.setNegativeButton(
-            "No"
+            "Cancel"
         ) { dialog, id -> onBackPressed() }
-        val alert11 = builder1.create()
-        alert11.show()
+        val alert = builder1.create()
+        alert.show()*/
+
+
     }
 
     private val callback: BarcodeCallback = object : BarcodeCallback {
@@ -337,6 +433,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         }
     }
 
+
     override fun onResume() {
         super.onResume()
         // capture.onResume();
@@ -345,6 +442,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     override fun onPause() {
         super.onPause()
         capture!!.onPause()
+
 
     }
 
@@ -355,15 +453,15 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
     }
 
     private fun openGallery() {
-        if(!isGalleyOpen) {
-           val pickIntent =
-               Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-           pickIntent.type = "image/*"
-           startActivityForResult(pickIntent, PICK_IMAGE_FROM_GALLERY)
-       }
-        isGalleyOpen=true
-        Handler().postDelayed ({
-            isGalleyOpen=false
+        if (!isGalleyOpen) {
+            val pickIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickIntent.type = "image/*"
+            startActivityForResult(pickIntent, PICK_IMAGE_FROM_GALLERY)
+        }
+        isGalleyOpen = true
+        Handler().postDelayed({
+            isGalleyOpen = false
         }, 1000)
     }
 
@@ -397,7 +495,6 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
                     getScanDetail(result.getText())
 
 
-
                 } catch (e: NotFoundException) {
                     CustomToastView.errorToasMessage(
                         this,
@@ -411,42 +508,52 @@ class FitpassScanQrCodeActivity : AppCompatActivity(),FitpassScanListener{
         }
 
     }
-    fun getScanDetail(qrcode:String){
+
+    fun getScanDetail(qrcode: String) {
         /* latitude="28.6139390"
          longitude="77.20906]11"*/
         setCordinate()
         scanViewModel?.let {
-            var request= JSONObject()
+            var request = JSONObject()
             //request.put("qr_code_string","de-2")
-            request.put("qr_code_string",qrcode)
-            request.put("latitude",latitude)
-            request.put("longitude",longitude)
-            request.put("user_schedule_id",user_schedule_id)
-            Log.d("Api_Request",request.toString())
-            if(user_schedule_id.equals("0")){
-                it.getScanData(request,false)
-            }else{
-                it.getScanData(request,true)
+            request.put("qr_code_string", qrcode)
+            request.put("latitude", latitude)
+            request.put("longitude", longitude)
+            request.put("user_schedule_id", user_schedule_id)
+            Log.d("Api_Request", request.toString())
+            if (user_schedule_id.equals("0")) {
+                it.getScanData(request, false)
+            } else {
+                it.getScanData(request, true)
             }
 
         }
     }
 
-    override fun onScanClick(workout: Workout,studioName:String,logo:String,address:String,position:Int) {
-        user_schedule_id=workout.user_schedule_id
-        workout_name=workout.workout_name
-        start_time=workout.start_time.toString()
-        security_code=workout.security_code.toString()
-        activityId=workout.activity_id.toString()
-        this.studioName=studioName
-        this.studioLogo=logo
-        this.address=address
-        this.position=position
-        binding.llShowQr.visibility=View.VISIBLE
+    override fun onScanClick(
+        workout: Workout,
+        studioName: String,
+        logo: String,
+        address: String,
+        position: Int
+    ) {
+        user_schedule_id = workout.user_schedule_id
+        workout_name = workout.workout_name
+        start_time = workout.start_time.toString()
+        security_code = workout.security_code.toString()
+        activityId = workout.activity_id.toString()
+        this.studioName = studioName
+        this.studioLogo = logo
+        this.address = address
+        this.position = position
+        binding.llShowQr.visibility = View.VISIBLE
 
     }
-    fun setCordinate(){
-        latitude= FitpassPrefrenceUtil.getStringPrefs(this,FitpassPrefrenceUtil.LATITUDE,"0.0").toString()
-        longitude=FitpassPrefrenceUtil.getStringPrefs(this,FitpassPrefrenceUtil.LONGITUDE,"0.0").toString()
+
+    fun setCordinate() {
+        latitude = FitpassPrefrenceUtil.getStringPrefs(this, FitpassPrefrenceUtil.LATITUDE, "0.0")
+            .toString()
+        longitude = FitpassPrefrenceUtil.getStringPrefs(this, FitpassPrefrenceUtil.LONGITUDE, "0.0")
+            .toString()
     }
 }

@@ -12,6 +12,7 @@ object FitpassPrefrenceUtil {
     var SECRET_KEY = "secret_key"
     var LATITUDE = "latitude"
     var LONGITUDE = "longitude"
+    var ISLOAD_DASHBOARD_DATA = "isload"
     private fun getSharedPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
     }
