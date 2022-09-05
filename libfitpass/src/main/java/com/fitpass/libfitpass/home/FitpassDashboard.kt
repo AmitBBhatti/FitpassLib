@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.util.Base64
 import android.util.Log
@@ -39,12 +40,33 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
     private var homeViewModel: HomeViewModel? = null
     var PERMISSION_CODE: Int = 101
     var LOCATION_PERMISSION_CODE: Int = 102
+    var LOCATION_PERMISSION_CODE1: Int = 103
     var weburl: String = ""
     var message: String = ""
     var show_header: Boolean = true
-   // lateinit var sliderWorkoutata:SliderActivity
+    // lateinit var sliderWorkoutata:SliderActivity
     var workoutdata=""
     val slideractivitylist = ArrayList<SliderActivity>()
+    private val activitiesConfig =
+        "[{\"image_id\":\"activity_2\",\"activity_color\":\"#815E0D\",\"start_color\":\"#998046\",\"end_color\":\"#815E0D\",\"activity_id\":\"2\"}," +
+                "{\"image_id\":\"activity_4\",\"activity_color\":\"#FBBB74\",\"start_color\":\"#F5BF40\",\"end_color\":\"#FBBB74\",\"activity_id\":\"4\"}," +
+                "{\"image_id\":\"activity_15\",\"activity_color\":\"#6E1F7A\",\"start_color\":\"#AD68B7\",\"end_color\":\"#6E1F7A\",\"activity_id\":\"15\"}," +
+                "{\"image_id\":\"activity_1\",\"activity_color\":\"#4DC349\",\"start_color\":\"#80DB7E\",\"end_color\":\"#4DC349\",\"activity_id\":\"1\"}," +
+                "{\"image_id\":\"activity_6\",\"activity_color\":\"#6345C6\",\"start_color\":\"#9F6EDC\",\"end_color\":\"#6345C6\",\"activity_id\":\"6\"}," +
+                "{\"image_id\":\"activity_14\",\"activity_color\":\"#59B1D7\",\"start_color\":\"#10BDDB\",\"end_color\":\"#59B1D7\",\"activity_id\":\"14\"}," +
+                "{\"image_id\":\"activity_13\",\"activity_color\":\"#1C1162\",\"start_color\":\"#675EA4\",\"end_color\":\"#1C1162\",\"activity_id\":\"13\"}," +
+                "{\"image_id\":\"activity_16\",\"activity_color\":\"#D04A31\",\"start_color\":\"#F5908C\",\"end_color\":\"#D04A31\",\"activity_id\":\"16\"}," +
+                "{\"image_id\":\"activity_3\",\"activity_color\":\"#5E8CEB\",\"start_color\":\"#879AF5\",\"end_color\":\"#5E8CEB\",\"activity_id\":\"3\"}," +
+                "{\"image_id\":\"activity_12\",\"activity_color\":\"#8A2E14\",\"start_color\":\"#A85D4A\",\"end_color\":\"#8A2E14\",\"activity_id\":\"12\"}," +
+                "{\"image_id\":\"activity_9\",\"activity_color\":\"#41CCC6\",\"start_color\":\"#5FEAE5\",\"end_color\":\"#41CCC6\",\"activity_id\":\"9\"}," +
+                "{\"image_id\":\"activity_10\",\"activity_color\":\"#C734E0\",\"start_color\":\"#E981FB\",\"end_color\":\"#C734E0\",\"activity_id\":\"10\"}," +
+                "{\"image_id\":\"activity_11\",\"activity_color\":\"#8F40E6\",\"start_color\":\"#B47DF1\",\"end_color\":\"#8F40E6\",\"activity_id\":\"11\"}," +
+                "{\"image_id\":\"activity_7\",\"activity_color\":\"#DA4361\",\"start_color\":\"#EF78BA\",\"end_color\":\"#DA4361\",\"activity_id\":\"7\"}," +
+                "{\"image_id\":\"activity_8\",\"activity_color\":\"#EAC644\",\"start_color\":\"#EBE382\",\"end_color\":\"#EAC644\",\"activity_id\":\"8\"}," +
+                "{\"image_id\":\"activity_5\",\"activity_color\":\"#D04A31\",\"start_color\":\"#F5908C\",\"end_color\":\"#D04A31\",\"activity_id\":\"5\"}," +
+                "{\"image_id\":\"activity_17\",\"activity_color\":\"#DA4361\",\"start_color\":\"#EF78BA\",\"end_color\":\"#DA4361\",\"activity_id\":\"17\"}," +
+                "{\"image_id\":\"activity_18\",\"activity_color\":\"#EAC644\",\"start_color\":\"#EBE382\",\"end_color\":\"#EAC644\",\"activity_id\":\"18\"}," +
+                "{\"image_id\":\"activity_19\",\"activity_color\":\"#41CCC6\",\"start_color\":\"#5FEAE5\",\"end_color\":\"#41CCC6\",\"activity_id\":\"19\"}]"
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +74,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_fit_pass_dashboard)
         binding.rlAlert.visibility= View.GONE
         FitpassPrefrenceUtil.setBooleanPrefs(this, FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,true)
+        FitpassPrefrenceUtil.setStringPrefs(this, FitpassPrefrenceUtil.ACTIVITY_DATA,activitiesConfig)
         setHeader()
 
         binding.tvWishMesg.setText(getWishMessage())
@@ -97,10 +120,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
     override fun onStart() {
         super.onStart()
         binding.rlAlert.visibility=View.GONE
-        val manager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            gpsAlert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
-        }
+
         if(FitpassPrefrenceUtil.getBooleanPrefs(this,FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,false)){
             FitpassPrefrenceUtil.setBooleanPrefs(this,FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,false)
             homeViewModel?.let {
@@ -109,7 +129,10 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
                 request.put("policy_number", "11111111113111")
                 request.put("member_id", "15143512435")
                 // it.getHomeData(Request("15143512435","11111111113111","183"))
-                it.getHomeData(request)
+                if(NetworkUtil.checkInternetConnection(this)){
+                    it.getHomeData(request)
+                }
+
             }
         }
 
@@ -119,7 +142,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         binding.alertpopup.tvTitle.setText(title)
         binding.alertpopup.tvMsg.setText(msg)
         binding.alertpopup.tvCancel.setOnClickListener {
-           onBackPressed()
+            binding.rlAlert.visibility=View.GONE
         }
         binding.alertpopup.tvSetting.setOnClickListener {
             startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
@@ -142,23 +165,29 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun checkPermission() {
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+
+        val manager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsAlert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
+        }else if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
                 arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.CAMERA
                 ),
                 PERMISSION_CODE
             )
-        } else {
+        }else if ( ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                LOCATION_PERMISSION_CODE1
+            )
+
+        }
+        else {
             Log.d("checkPermission", "grant")
             openScanActivity()
         }
@@ -219,7 +248,13 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
             ) {
                 alert(resources.getString(R.string.turnoncamera),resources.getString(R.string.cameramsg))
 
-            } else if (ContextCompat.checkSelfPermission(
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("onRequestResult", "PERMISSION_GRANTED")
+                checkPermission()
+
+            }
+        }else if (requestCode == LOCATION_PERMISSION_CODE1) {
+            if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
@@ -238,8 +273,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
                 openScanActivity()
 
             }
-        }
-        if (requestCode == LOCATION_PERMISSION_CODE) {
+        }else if (requestCode == LOCATION_PERMISSION_CODE) {
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -255,7 +289,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("onRequestResult", "PERMISSION_GRANTED")
                 FitpassLocationUtil.refreshLocation(this)
-                encodeBase64Url()
+                encodeBase64Url(true)
             }
         }
 
@@ -315,7 +349,10 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun checkLocationPermission(isopenWeb: Boolean) {
-        if (ActivityCompat.checkSelfPermission(
+        val manager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsAlert(resources.getString(R.string.turnonlocation),resources.getString(R.string.locationmsg))
+        }else if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
@@ -335,13 +372,26 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         } else {
             FitpassLocationUtil.refreshLocation(this)
             if (isopenWeb) {
-                encodeBase64Url()
+                encodeBase64Url(false)
             }
         }
     }
 
-    fun encodeBase64Url() {
+    fun encodeBase64Url(isHold:Boolean) {
         /*https://fitpass-pwa.web.app?querystring=latitude===28.6456&&longitude===77.2024&&header_font_color===#000000&&header_bgcolor===#ffffff&&user_id=1*/
+        if(isHold){
+            Handler().postDelayed(Runnable {
+                genBase64WithUrl()
+                openWebActivity()
+            },3000)
+        }else{
+            genBase64WithUrl()
+            openWebActivity()
+        }
+
+
+    }
+    fun genBase64WithUrl(){
         var fitpassConfig = FitpassConfig.getInstance()
         var concaturl: String = "latitude===" + FitpassPrefrenceUtil.getStringPrefs(
             this,
@@ -365,6 +415,5 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         val base64: String = Base64.encodeToString(data1, Base64.DEFAULT)
         weburl = weburl + "?querystring=" + base64
         Log.d("weburl", weburl)
-        openWebActivity()
     }
 }

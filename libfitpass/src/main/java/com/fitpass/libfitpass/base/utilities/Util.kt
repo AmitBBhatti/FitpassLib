@@ -8,6 +8,10 @@ import android.util.Log
 import com.fitpass.libfitpass.base.constants.ConfigConstants
 import com.fitpass.libfitpass.base.dataencription.CryptLib
 import com.fitpass.libfitpass.fontcomponent.FontAwesome
+import com.fitpass.libfitpass.scanqrcode.activitymodels.ActivityConfig
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 import java.security.NoSuchAlgorithmException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -35,11 +39,11 @@ object Util {
         shape.setColor(Color.parseColor(backgroundColor))
         return shape
     }
-    fun drawGradient(): GradientDrawable? {
-        var gd = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(Color.parseColor("#ef78ba"), Color.parseColor("#da4361")))
+    fun drawGradient(startColor:String,endColor:String): GradientDrawable? {
+        var gd = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(Color.parseColor(startColor), Color.parseColor(endColor)))
         gd.shape = GradientDrawable.RECTANGLE
         gd.cornerRadii = floatArrayOf(10f, 10f, 10f, 10f, 10f, 10f, 10f, 10f)
-       return gd
+        return gd
     }
 
     fun convertMiliesToDD_MM_HH_MMDateTime2(milies: String, isMiliConversionRequired: Boolean): String? {
@@ -133,6 +137,21 @@ object Util {
         return encrptData
     }
 
+    fun decrptWithSecretekey(data: String?): JSONObject? {
+        return try {
+            val cryptLib = CryptLib()
+            val decrptedData = cryptLib.decryptCipherTextWithRandomIV(
+                data,
+                FitpassPrefrenceUtil.SECRET_KEY
+            )
+            Log.e("decrptff", decrptedData)
+            JSONObject(decrptedData)
+        } catch (e: java.lang.Exception) {
+            Log.d("Exception",e.toString())
+            e.printStackTrace()
+            null
+        }
+    }
      fun getWorkoutImage(imageId: Int): String {
          return when (imageId) {
              1 -> "e901"
@@ -166,5 +185,16 @@ object Util {
             // This color string is not valid
             return false
         }
+    }
+
+    fun getActivityConfigList(context: Context): ArrayList<ActivityConfig>? {
+        var activityConfigList = ArrayList<ActivityConfig>()
+        var gson = Gson()
+        val activityConfig: String = FitpassPrefrenceUtil.getStringPrefs(context,FitpassPrefrenceUtil.ACTIVITY_DATA,"").toString()
+        if(!activityConfig.isNullOrEmpty()){
+            val type = object : TypeToken<List<ActivityConfig?>?>() {}.type
+            activityConfigList = gson.fromJson<ArrayList<ActivityConfig>>(activityConfig, type)
+        }
+        return activityConfigList
     }
 }

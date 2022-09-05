@@ -73,6 +73,7 @@ class UpcomingAdapter(
                 binding.rlDetail.setPadding(0, 0, paddingPixel, 0);
             }*/
             if (list.value!!.get(position).data.workout_status.equals("3")) {
+                binding.llStatus.visibility = View.VISIBLE
                 binding.viewCircle.visibility = View.GONE
                 if (list.value!!.get(position).data.urc_updated_time != null) {
                     if (list.value!!.get(position).data.urc_updated_time > 0) {
@@ -86,16 +87,16 @@ class UpcomingAdapter(
                 } else {
                     binding.tvStatus.visibility = View.GONE
                 }
-            } else if (list.value!!.get(position).data.ongoing_workout.equals("1") && !list.value!!.get(
-                    position
-                ).data.workout_status.equals("1")
+            } else if (list.value!!.get(position).data.ongoing_workout.equals("1") && !list.value!!.get(position).data.workout_status.equals("1")
             ) {
+                binding.llStatus.visibility = View.VISIBLE
                 binding.viewCircle.visibility = View.GONE
                 binding.tvStatus.setText("Ongoing workout")
             } else {
-                binding.viewCircle.visibility = View.GONE
+                binding.llStatus.visibility = View.GONE
                 binding.tvStatus.setText("")
             }
+
 
             binding.llScan.setOnClickListener {
                 fitpassHomeListener.onScanClick(list!!.value!!.get(position))

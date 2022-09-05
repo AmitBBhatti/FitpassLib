@@ -1,15 +1,12 @@
 package com.fitpass.libfitpass.scanqrcode
 
-import android.content.Context
+import android.R.attr.bitmap
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Point
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Display
-import android.view.View
 import android.view.WindowManager
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
@@ -19,6 +16,7 @@ import com.fitpass.libfitpass.base.utilities.FitpassConfig
 import com.fitpass.libfitpass.base.utilities.FitpassConfigUtil
 import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.ActivityShowQrCodeBinding
+import com.fitpass.libfitpass.scanqrcode.activitymodels.ActivityConfig
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
@@ -26,7 +24,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 
 
 class FitpassShowQrCodeActivity : AppCompatActivity() {
-     lateinit var binding:ActivityShowQrCodeBinding
+    lateinit var binding:ActivityShowQrCodeBinding
     private lateinit var strEncrypted:String
     private lateinit var securityCode:String
     private lateinit var latitude:String
@@ -52,8 +50,15 @@ class FitpassShowQrCodeActivity : AppCompatActivity() {
         onClick()
         setStatusBarColor()
         setPadding()
-
+        var activitlist:ArrayList<ActivityConfig>
+        activitlist= Util.getActivityConfigList(this)!!
+        for(data in activitlist){
+            if(data.activity_id.equals(activityId)) {
+                binding.faWorkoutIcon.setTextColor(Color.parseColor(data.end_color))
+            }
+        }
     }
+
 
     fun setPadding() {
         var fitpassConfig = FitpassConfig.getInstance()
@@ -103,18 +108,44 @@ class FitpassShowQrCodeActivity : AppCompatActivity() {
         textToSend.append("security_code=$securityCode&user_schedule_id=$securityCode&qrcode_create_time=$current_time&latitude=$latitude&longitude=$longitude")
         val multiFormatWriter = MultiFormatWriter()
         try {
-
+            var manager=getSystemService(WINDOW_SERVICE) as WindowManager
+            var display=manager.defaultDisplay
+            var point=Point()
+            display.getSize(point)
+            var width=point.x
+            var height=point.y
+            var dimen:Int=0
+            if(width>height){
+                dimen=width
+            }else {
+                dimen=height
+            }
+            // dimen=dimen*3/4
+            Log.d("dimen",dimen.toString())
             Log.d("llQrcode",getWindowManager().getDefaultDisplay().getWidth().toString())
             var screenWidth:Int=getWindowManager().getDefaultDisplay().getWidth().toString().toInt()
             var fitpassConfig = FitpassConfig.getInstance()
             var paddingDp: Int = fitpassConfig!!.getPadding();
             var density = getResources().getDisplayMetrics().density.toFloat()
             var paddingPixel = (paddingDp * density).toInt();
+            var widthPixel = (dimen * density).toInt();
+            Log.d("dimen1",widthPixel.toString())
             securityCode = Util.encrptDataWithSecretekey(this,textToSend.toString()).toString()
-            val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, screenWidth-paddingPixel ,screenWidth-paddingPixel)
-           // val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, screenWidth-paddingPixel ,500)
+            // val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, screenWidth-paddingPixel ,screenWidth-paddingPixel)
+            val bitMatrix = multiFormatWriter.encode(securityCode, BarcodeFormat.QR_CODE, 600 ,600)
             val barcodeEncoder: BarcodeEncoder = BarcodeEncoder()
             val bitmap: Bitmap = barcodeEncoder.createBitmap(bitMatrix)
+            /* val qrgEncoder = QRGEncoder(inputValue, null, QRGContents.Type.TEXT, dimen)
+             qrgEncoder.setColorBlack(Color.RED)
+             qrgEncoder.setColorWhite(Color.BLUE)
+             try {
+                 // Getting QR-Code as Bitmap
+                 bitmap = qrgEncoder.getBitmap()
+                 // Setting Bitmap to ImageView
+                 qrImage.setImageBitmap(bitmap)
+             } catch (e: WriterException) {
+                 Log.v(TAG, e.toString())
+             }*/
             binding?.qrCodeImage?.setImageBitmap(bitmap)
         } catch (e: WriterException) {
             e.printStackTrace()

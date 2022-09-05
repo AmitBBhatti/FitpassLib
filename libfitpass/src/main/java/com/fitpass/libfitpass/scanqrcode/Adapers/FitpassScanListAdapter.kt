@@ -16,6 +16,7 @@ import com.fitpass.libfitpass.base.utilities.Util
 import com.fitpass.libfitpass.databinding.WorkoutscanRowBinding
 import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.fitpass.libfitpass.scanqrcode.FitpassShowQrCodeActivity
+import com.fitpass.libfitpass.scanqrcode.activitymodels.ActivityConfig
 import com.fitpass.libfitpass.scanqrcode.models.Workout
 import com.fitpass.libfitpass.scanqrcode.viewmodel.ScanViewModel
 
@@ -70,14 +71,21 @@ class FitpassScanListAdapter(
             holder.binding.llScanHelp.visibility = View.GONE
             Util.setFantIcon(holder.binding.faIcon, FontIconConstant.ACTIVE_ICON)
         } else {
-           // holder.binding.rlIcon.background = Util.drawRectRadious("#e60d61")
-            holder.binding.rlIcon.background = Util.drawGradient()
+            // holder.binding.rlIcon.background = Util.drawRectRadious("#e60d61")
+
             holder.binding.tvDefault.visibility = View.VISIBLE
             holder.binding.tvWorkoutStatus.visibility = View.GONE
             holder.binding.llScanHelp.visibility = View.VISIBLE
+            var activitlist:ArrayList<ActivityConfig>
+            activitlist= Util.getActivityConfigList(context)!!
+            for(data in activitlist){
+                if(data.activity_id.equals(list.value!!.get(position).activity_id)) {
+                    holder.binding.rlIcon.background = Util.drawGradient(data.start_color, data.end_color)
+                }
+            }
             if (!list.value!!.get(position).activity_id.isNullOrEmpty()) {
                 holder.binding.faIcon.setText(Util.getWorkoutImage(list.value!!.get(position).activity_id!!.toInt()).toInt(16)
-                        .toChar().toString()
+                    .toChar().toString()
                 )
             }
         }
@@ -90,8 +98,8 @@ class FitpassScanListAdapter(
                     tvDefaultList.get(pos).visibility=View.VISIBLE
                 }else{
                     Log.d("llScanList","GONE")
-                  /*  tv.visibility=View.VISIBLE
-                    tvDefaultList.get(pos).visibility=View.GONE*/
+                    /*  tv.visibility=View.VISIBLE
+                      tvDefaultList.get(pos).visibility=View.GONE*/
                 }
                 pos=pos+1
             }

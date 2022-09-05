@@ -35,6 +35,7 @@ import com.fitpass.libfitpass.databinding.ActivityFitpassScanQrCodeBinding
 import com.fitpass.libfitpass.fontcomponent.FontAwesome
 import com.fitpass.libfitpass.home.http_client.CommonRepository
 import com.fitpass.libfitpass.home.models.SliderActivity
+import com.fitpass.libfitpass.scanqrcode.activitymodels.ActivityConfig
 import com.fitpass.libfitpass.scanqrcode.listeners.FitpassScanListener
 import com.fitpass.libfitpass.scanqrcode.models.Workout
 import com.google.gson.Gson
@@ -57,6 +58,8 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
     lateinit var llRefreshLocation: LinearLayout
     lateinit var tvScanGallery: TextView
     lateinit var faFlash: FontAwesome
+    lateinit var faScan: FrameLayout
+
     var isFlash: Boolean = true
     var isFlashAvail: Boolean = true
     var workout_name: String = ""
@@ -79,10 +82,6 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
         lateinit var llScanHelp: LinearLayout
         lateinit var rlIcon: RelativeLayout
         lateinit var faIcon: FontAwesome
-        lateinit var flScan: LinearLayout
-        lateinit var vf: ViewfinderView
-        lateinit var bv: BarcodeView
-
     }
 
     private fun hideBottomBars(
@@ -143,9 +142,9 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
         rlScanGalley = binding?.root?.findViewById<RelativeLayout>(R.id.rlScanGalley)!!
         llRefreshLocation = binding?.root?.findViewById<LinearLayout>(R.id.llRefreshLocation)!!
         tvScanGallery = binding?.root?.findViewById<TextView>(R.id.tvScanGallery)!!
-        flScan = binding?.root?.findViewById<LinearLayout>(R.id.flScan)!!
-        vf = binding?.root?.findViewById<ViewfinderView>(R.id.zxing_viewfinder_view)!!
-        bv = binding?.root?.findViewById<BarcodeView>(R.id.zxing_barcode_surface)!!
+        faScan = binding?.root?.findViewById<FrameLayout>(R.id.faScan)!!
+
+
         Util.setFantIcon(faFlash!!, FontIconConstant.FLASH_ICON_OFF)
         Util.setFantIcon(faRefreshLocation!!, FontIconConstant.REFERESH_LOC_ICON)
         Util.setFantIcon(faScanFromGallery!!, FontIconConstant.GALLEY_ICON)
@@ -181,7 +180,14 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
                 binding.tvWorkoutName.setText(workoutdata.data.workout_name)
                 binding.tvStudioName.setText(workoutdata.data.studio_name)
                 activityId = workoutdata.data.activity_id
-                binding.rlIcon.background = Util.drawRectRadious("#51d071")
+                var activitlist:ArrayList<ActivityConfig>
+                activitlist= Util.getActivityConfigList(this)!!
+                for(data in activitlist){
+                    if(data.activity_id.equals(activityId)) {
+                        binding.rlIcon.background = Util.drawGradient(data.start_color, data.end_color)
+                    }
+                }
+                // binding.rlIcon.background = Util.drawRectRadious("#51d071")
                 if (!activityId.isNullOrEmpty()) {
                     binding.faIcon.setText(
                         Util.getWorkoutImage(activityId!!.toInt()).toInt(16).toChar().toString()
@@ -212,6 +218,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
 
         }
 
+
     }
 
     fun setPadding() {
@@ -230,12 +237,13 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
         var paddingPixel = (paddingDp * density).toInt();
         // FitpassScanQrCodeActivity.flScan.setPadding(0, 0, 0, paddingPixel);
 
-        var params = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
+        var params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
         );
         params.setMargins(0, 0, 0, paddingPixel);
-        binding.flScan.setLayoutParams(params);
+        // rlScan.setLayoutParams(params);
+       // rlScan.setPadding(0, 0, 0, paddingPixel)
         //  FitpassScanQrCodeActivity.bv.setLayoutParams(params);
     }
 
@@ -246,6 +254,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
         }
         llFlash!!.setOnClickListener {
 
+            // setPadding1()
             if (isFlash) {
                 isFlash = false
                 binding.barcodeScanner.setTorchOn()
@@ -395,23 +404,23 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
             intent.data = uri
             startActivity(intent)
         }
-       /* val builder1 = AlertDialog.Builder(this)
-        builder1.setTitle(title)
-        builder1.setMessage(msg)
-        builder1.setCancelable(false)
-        builder1.setPositiveButton(
-            "Settings"
-        ) { dialog, id ->
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", this.packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
-        builder1.setNegativeButton(
-            "Cancel"
-        ) { dialog, id -> onBackPressed() }
-        val alert = builder1.create()
-        alert.show()*/
+        /* val builder1 = AlertDialog.Builder(this)
+         builder1.setTitle(title)
+         builder1.setMessage(msg)
+         builder1.setCancelable(false)
+         builder1.setPositiveButton(
+             "Settings"
+         ) { dialog, id ->
+             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+             val uri = Uri.fromParts("package", this.packageName, null)
+             intent.data = uri
+             startActivity(intent)
+         }
+         builder1.setNegativeButton(
+             "Cancel"
+         ) { dialog, id -> onBackPressed() }
+         val alert = builder1.create()
+         alert.show()*/
 
 
     }
@@ -521,11 +530,14 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
             request.put("longitude", longitude)
             request.put("user_schedule_id", user_schedule_id)
             Log.d("Api_Request", request.toString())
-            if (user_schedule_id.equals("0")) {
-                it.getScanData(request, false)
-            } else {
-                it.getScanData(request, true)
+            if(NetworkUtil.checkInternetConnection(this)){
+                if (user_schedule_id.equals("0")) {
+                    it.getScanData(request, false)
+                } else {
+                    it.getScanData(request, true)
+                }
             }
+
 
         }
     }

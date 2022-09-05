@@ -22,6 +22,8 @@
     <string name="showqrcode">Show your QR code</string>
     <string name="needhelp">Need Help</string>
     <string name="yourqrcode">Your QR code</string>
+    <string name="no_internet">Please check your internet connection</string>
+
    <!-- <string name="cameramsg">We need to allow the camera permission to scan the QR Code. Do you want to allow it.</string>
    -->
     <string name="cameramsg">FITPASS would like to access the camera to scan the QR code and help you enjoy your workout</string>
