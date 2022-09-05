@@ -14,6 +14,8 @@ import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -34,6 +36,7 @@ import com.fitpass.libfitpass.scanqrcode.FitpassScanQrCodeActivity
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.util.*
+
 
 class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
     lateinit var binding: ActivityFitPassDashboardBinding
@@ -78,10 +81,6 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         setHeader()
 
         binding.tvWishMesg.setText(getWishMessage())
-        /* var fm=supportFragmentManager
-         var ft:FragmentTransaction=fm.beginTransaction()
-         ft.add(R.id.container,HomeFragment())
-         ft.commit()*/
         setPadding()
         checkLocationPermission(false)
         var commonRepository = CommonRepository(this, this)

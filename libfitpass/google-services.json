@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "289418252084",
+    "project_id": "libfitpass",
+    "storage_bucket": "libfitpass.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289418252084:android:050a83945587c380e3df61",
+        "android_client_info": {
+          "package_name": "com.fitpass.libfitpass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289418252084-g07tb5l9lf0djd9nqpqgri4rn1i3ccae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQVjxP69409cWlCbIHcUeRcXWs_ifB0Cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289418252084-g07tb5l9lf0djd9nqpqgri4rn1i3ccae.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
