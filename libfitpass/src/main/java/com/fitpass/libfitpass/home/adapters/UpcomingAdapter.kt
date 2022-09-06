@@ -103,16 +103,8 @@ class UpcomingAdapter(
             }
 
             binding.faDirection.setOnClickListener {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(
-                        "http://maps.google.com/maps?saddr=" + list.value!!.get(position).data.latitude + "," + list.value!!.get(
-                            position
-                        ).data.longitude + "&daddr=" + FitpassPrefrenceUtil.getStringPrefs(context, FitpassPrefrenceUtil.LATITUDE, "0.0") + "," + FitpassPrefrenceUtil.getStringPrefs(context, FitpassPrefrenceUtil.LONGITUDE, "0.0"
-                        )
-                    )
-                )
-                context.startActivity(intent)
+                fitpassHomeListener.onDirectionClick(list!!.value!!.get(position))
+
             }
 
             vp.addView(binding.root, 0)

@@ -44,11 +44,14 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
     var PERMISSION_CODE: Int = 101
     var LOCATION_PERMISSION_CODE: Int = 102
     var LOCATION_PERMISSION_CODE1: Int = 103
+    var LOCATION_PERMISSION_CODE2: Int = 104
     var weburl: String = ""
     var message: String = ""
     var vendorId: String = ""
     var policyNo: String = ""
     var memberId: String = ""
+    var latitude: String = ""
+    var longitude: String = ""
     var show_header: Boolean = true
 
     // lateinit var sliderWorkoutata:SliderActivity
@@ -107,11 +110,15 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
 
         binding.llScan.setOnClickListener {
             workoutdata = ""
-            if (slideractivitylist.size == 1) {
-                if (!slideractivitylist.get(1).data.workout_status.equals("3")) {
-                    var gson = Gson()
-                    workoutdata = gson.toJson(slideractivitylist.get(1))
+            try {
+                if (slideractivitylist.size == 1) {
+                    if (!slideractivitylist.get(0).data.workout_status.equals("3")) {
+                        var gson = Gson()
+                        workoutdata = gson.toJson(slideractivitylist.get(0))
+                    }
                 }
+            }catch (e:Exception){
+
             }
             checkPermission()
         }
@@ -371,6 +378,29 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
                 FitpassLocationUtil.refreshLocation(this)
                 encodeBase64Url(true)
             }
+        }else  if (requestCode == LOCATION_PERMISSION_CODE2) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                alert(
+                    resources.getString(R.string.turnonlocation),
+                    resources.getString(R.string.locationmsg)
+                )
+            } else if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                alert(
+                    resources.getString(R.string.turnonlocation),
+                    resources.getString(R.string.locationmsg)
+                )
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                FitpassLocationUtil.refreshLocation(this)
+               openMap(true)
+            }
         }
 
     }
@@ -406,6 +436,47 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
         var gson = Gson()
         workoutdata = gson.toJson(item)
         checkPermission()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onDirectionClick(item: SliderActivity) {
+         latitude=item.data.latitude
+         longitude=item.data.longitude
+        val manager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsAlert(
+                resources.getString(R.string.turnonlocation),
+                resources.getString(R.string.locationmsg)
+            )
+        } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                LOCATION_PERMISSION_CODE2
+            )
+
+        } else {
+            openMap(false)
+        }
+    }
+    fun openMap(isHold:Boolean){
+        if (isHold) {
+            Handler().postDelayed(Runnable {
+                openMap()
+            }, 3000)
+        } else {
+            openMap()
+        }
+    }
+    fun openMap()
+    {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("http://maps.google.com/maps?saddr=" + latitude + "," + longitude + "&daddr=" + FitpassPrefrenceUtil.getStringPrefs(this, FitpassPrefrenceUtil.LATITUDE, "0.0") + "," + FitpassPrefrenceUtil.getStringPrefs(this, FitpassPrefrenceUtil.LONGITUDE, "0.0"))
+        )
+        startActivity(intent)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -459,6 +530,7 @@ class FitpassDashboard : AppCompatActivity(), FitpassHomeListener {
             }
         }
     }
+
 
     fun encodeBase64Url(isHold: Boolean) {
         /*https://fitpass-pwa.web.app?querystring=latitude===28.6456&&longitude===77.2024&&header_font_color===#000000&&header_bgcolor===#ffffff&&user_id=1*/
