@@ -1,5 +1,6 @@
 package com.fitpass.libfitpass.base.CustomAdapters
 
+import android.util.Log
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -63,6 +64,7 @@ private fun getFaqItemsAdapter(recyclerView: RecyclerView, homeViewModel: HomeVi
 @BindingAdapter("upcomingItems","upcomingviewModel","fitpassHomeListener")
 fun bindUpcomingIItemsActivity(vp: ViewPager, list: MutableLiveData<ArrayList<SliderActivity>>?, homeViewModel: HomeViewModel,fitpassHomeListener: FitpassHomeListener) {
     val adapter = getUpcomingIItemsAdapter(vp,homeViewModel,fitpassHomeListener)
+   Log.d("upcomingItems","upcomingItems")
     if (list!=null&&list!!.value!=null)
     {
         adapter.updateItems(list)

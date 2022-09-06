@@ -18,10 +18,16 @@ class MainActivity : AppCompatActivity() {
         fitpassConfig!!.setHeaderTitle("FITPASS")
         fitpassConfig!!.setPadding(16)
         var intent=Intent(this,FitpassDashboard::class.java)
+        intent.putExtra("vendor_id", "183")
+        intent.putExtra("policy_number", "11111111113111")
+        intent.putExtra("member_id", "15143512435")
         startActivity(intent)
     }
     fun click(view: View) {
         var intent=Intent(this,FitpassDashboard::class.java)
+        intent.putExtra("vendor_id", "183")
+        intent.putExtra("policy_number", "11111111113111")
+        intent.putExtra("member_id", "15143512435")
         startActivity(intent)
     }
 }

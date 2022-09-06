@@ -84,11 +84,11 @@
                     android:id="@+id/vpUpcomming"
                     android:layout_width="match_parent"
                     android:layout_height="175dp"
-
-                    upcomingItems="@{homedata.sliderList}"
+                    />
+                <!-- upcomingItems="@{homedata.sliderList}"
                     upcomingviewModel="@{homedata.homeViewModel}"
                     fitpassHomeListener="@{homedata.fitpassHomeListener}"
-                    />
+                  -->
                 <LinearLayout
                     android:id="@+id/llDots"
                     android:layout_width="wrap_content"
@@ -177,8 +177,6 @@
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
-
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

@@ -33,6 +33,9 @@
     <string name="locationmsg">We require your location to show the nearby gyms &amp; studios.</string>
     <string name="turnonlocation">Turn On Location Services</string>
     <string name="turnoncamera">Turn On Camera Services</string>
+    <string name="vendormsg">Vendor id is missing</string>
+    <string name="policymsg">Policy number is missing</string>
+    <string name="membermsg">Member id is missing</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

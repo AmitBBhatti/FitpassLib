@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.viewpager.widget.ViewPager
 import com.fitpass.libfitpass.R
 import com.fitpass.libfitpass.base.constants.ConfigConstants
+import com.fitpass.libfitpass.base.customview.CustomToastView
 import com.fitpass.libfitpass.base.dataencription.RandomKeyGenrator
 import com.fitpass.libfitpass.base.fitpasscomparators.FitpassLowtoHighComparator
 import com.fitpass.libfitpass.base.http_client.CustomLoader
@@ -33,7 +34,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import retrofit2.Response
 import java.util.*
-import kotlin.collections.ArrayList
 
 class HomeViewModel(
     val commonRepository: CommonRepository,
@@ -59,13 +59,13 @@ class HomeViewModel(
     }
 
     fun getHomeData(requestBody: JSONObject) {
-
         viewModelScope.launch(Dispatchers.Main)
         {
-
+            val dynamicSecretKey = RandomKeyGenrator.generate16DigitRandom()
+           // val EncryptBodyKey = RandomKeyGenrator.getAlphaNumericString(16)
             val EncryptBodyKey = RandomKeyGenrator.getAlphaNumericString(16)
-            RandomKeyGenrator.setRandomKey(EncryptBodyKey)
-            val encryptedData = RandomKeyGenrator.encrptBodydata(requestBody.toString())
+            RandomKeyGenrator.setRandomKey(dynamicSecretKey)
+            val encryptedData = RandomKeyGenrator.encrptBodydataWithRandomKey(requestBody.toString())
             withContext(Dispatchers.Main)
             {
                 CustomLoader.showLoaderDialog(activity, context)
@@ -91,6 +91,7 @@ class HomeViewModel(
         viewModelScope.launch {
             homeresponse.value = response
             if (response.results.slider_activity != null) {
+                FitpassPrefrenceUtil.setStringPrefs(context, FitpassPrefrenceUtil.APP_KEY, homeresponse!!.value!!.results.user_details.app_key.toString())
                 FitpassPrefrenceUtil.setStringPrefs(context, FitpassPrefrenceUtil.USER_ID, homeresponse!!.value!!.results.user_details.user_id.toString())
                 FitpassPrefrenceUtil.setStringPrefs(context, FitpassPrefrenceUtil.SECRET_KEY, homeresponse!!.value!!.results.user_details.secret_key.toString())
                 val slideractivitylist = ArrayList<SliderActivity>()
@@ -115,6 +116,9 @@ class HomeViewModel(
                     }
                 }
                 Collections.sort(slideractivitylist, FitpassLowtoHighComparator())
+                if(sliderList.value!=null){
+                    sliderList.value!!.clear()
+                }
                 sliderList.value = slideractivitylist
                 setupPagerIndidcatorDots(0)
                 setViewPagerListener()
@@ -131,7 +135,9 @@ class HomeViewModel(
 
     override fun handleErrorMessage(response: String?, api: String?) {
         Log.d("handleErrorMessage", response.toString())
+        CustomToastView.errorToasMessage(activity, context, response)
         CustomLoader.hideLoaderDialog(activity)
+
     }
 
     fun setViewPagerListener() {

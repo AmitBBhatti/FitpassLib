@@ -17,6 +17,7 @@ import com.fitpass.libfitpass.R
 import com.fitpass.libfitpass.base.http_client.CustomLoader
 import com.fitpass.libfitpass.base.utilities.FitpassConfig
 import com.fitpass.libfitpass.base.utilities.FitpassConfigUtil
+import com.fitpass.libfitpass.base.utilities.FitpassPrefrenceUtil
 import com.fitpass.libfitpass.databinding.ActivityFitpassWebViewBinding
 import java.lang.Exception
 
@@ -89,6 +90,7 @@ class FitpassWebViewActivity : AppCompatActivity(), View.OnClickListener {
            // CustomLoader.showLoaderDialog(activity,context)
             Log.d("url2",url+"..");
             if(url!!.contains("events.fitpass.dev")){
+                FitpassPrefrenceUtil.setBooleanPrefs(context,FitpassPrefrenceUtil.ISLOAD_DASHBOARD_DATA,true)
                 activity.finish()
             }
         }

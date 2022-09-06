@@ -1,7 +1,6 @@
 package com.fitpass.libfitpass.scanqrcode
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -530,7 +529,7 @@ class FitpassScanQrCodeActivity : AppCompatActivity(), FitpassScanListener {
             request.put("longitude", longitude)
             request.put("user_schedule_id", user_schedule_id)
             Log.d("Api_Request", request.toString())
-            if(NetworkUtil.checkInternetConnection(this)){
+            if(FitpassNetworkUtil.checkInternetConnection(this)){
                 if (user_schedule_id.equals("0")) {
                     it.getScanData(request, false)
                 } else {

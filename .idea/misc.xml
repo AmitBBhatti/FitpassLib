@@ -19,6 +19,7 @@
         <entry key="libfitpass/src/main/res/drawable/green_circle.xml" value="0.135" />
         <entry key="libfitpass/src/main/res/drawable/magenta_circle.xml" value="0.1" />
         <entry key="libfitpass/src/main/res/drawable/megenta_circle.xml" value="0.135" />
+        <entry key="libfitpass/src/main/res/drawable/orange_circle.xml" value="0.146" />
         <entry key="libfitpass/src/main/res/drawable/red_circle.xml" value="0.135" />
         <entry key="libfitpass/src/main/res/drawable/red_grad.xml" value="0.124" />
         <entry key="libfitpass/src/main/res/drawable/round_bg_white.xml" value="0.134" />
@@ -50,6 +51,7 @@
         <entry key="libfitpass/src/main/res/layout/video_upcoming_row.xml" value="0.18164967562557924" />
         <entry key="libfitpass/src/main/res/layout/workout_row.xml" value="0.33" />
         <entry key="libfitpass/src/main/res/layout/workoutscan_row.xml" value="0.22" />
+        <entry key="libfitpass/src/main/res/xml/my_backup_rules.xml" value="0.18115942028985507" />
       </map>
     </option>
   </component>

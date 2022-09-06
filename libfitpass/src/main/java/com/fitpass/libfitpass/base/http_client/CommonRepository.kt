@@ -55,15 +55,13 @@ class CommonRepository(val mContext: Context, val mActivity: Activity) {
                 if (response!!.has("code")) {
                     var responseCode = response!!.optInt("code")
                     if (responseCode == 401 ||  responseCode == 502) {
-                        // FitpassAplicationActivity().userLogout()
+                        handleResponseListeners.handleErrorMessage(response?.optString("message"), url)
                     } else if (responseCode == 200) {
                         handleResponseListeners.handleSuccess(data, url)
 
                     } else if (responseCode == 412) {
-                        handleResponseListeners.handleErrorMessage(
-                            response?.optString("message"),
-                            url
-                        )
+                        handleResponseListeners.handleErrorMessage(response?.optString("message"), url)
+
                     } else {
 
                         CustomToastView.errorToasMessage(mActivity, mContext, "" + response.getString("message"))

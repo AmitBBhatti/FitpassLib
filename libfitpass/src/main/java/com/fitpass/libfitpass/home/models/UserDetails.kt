@@ -5,4 +5,5 @@ data class UserDetails(
     val user_id: Int,
     val user_name: String,
     val secret_key: String,
+    val app_key: String,
 )

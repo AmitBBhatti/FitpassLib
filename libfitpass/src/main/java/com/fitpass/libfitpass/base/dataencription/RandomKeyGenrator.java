@@ -7,6 +7,7 @@ import com.fitpass.libfitpass.base.constants.ConfigConstants;
 import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -46,14 +47,29 @@ public class RandomKeyGenrator {
         Log.e("string_key_genrated",sb.toString());
         return sb.toString()+System.currentTimeMillis();
     }
-
+    public static String encrptBodydataWithRandomKey(String data){
+        Log.e("encrptdata Metod Log",data);
+        String encrptData="";
+        try {
+            CryptLib cryptLib=new CryptLib();
+            encrptData=  cryptLib.encryptPlainTextWithRandomIV(data,getRandomKey());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            encrptData=e.getMessage();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+            encrptData=e.getMessage();
+        }catch (Exception e){
+            encrptData=e.getLocalizedMessage();
+        }
+        return encrptData;
+    }
     public static String encrptBodydata(String data){
         Log.e("encrptdata Metod Log",data);
         String encrptData="";
         try {
             CryptLib cryptLib=new CryptLib();
             encrptData=  cryptLib.encryptPlainTextWithRandomIV(data, ConfigConstants.Companion.getDEFALUT_SECRET_KEY());
-
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             encrptData=e.getMessage();
@@ -82,5 +98,12 @@ public class RandomKeyGenrator {
             return null;
         }
 
+    }
+
+    public static String generate16DigitRandom() {
+        Random rand = new Random();
+        long x = (long)(rand.nextDouble()*10000000000000000L);
+        String s =String.format("%014d", x);
+        return s;
     }
 }

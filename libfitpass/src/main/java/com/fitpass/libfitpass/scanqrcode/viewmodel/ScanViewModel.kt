@@ -57,9 +57,9 @@ class ScanViewModel(
             if (!isLoading) {
                 isLoading=true
                 isAttend = isAttend1
-                val EncryptBodyKey = RandomKeyGenrator.getAlphaNumericString(16)
-                RandomKeyGenrator.setRandomKey(EncryptBodyKey)
-                val encryptedData = RandomKeyGenrator.encrptBodydata(requestBody.toString())
+                val dynamicSecretKey = RandomKeyGenrator.generate16DigitRandom()
+                RandomKeyGenrator.setRandomKey(dynamicSecretKey)
+                val encryptedData = RandomKeyGenrator.encrptBodydataWithRandomKey(requestBody.toString())
                 withContext(Dispatchers.Main)
                 {
                     CustomLoader.showLoaderDialog(activity, context)

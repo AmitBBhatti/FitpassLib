@@ -74,6 +74,7 @@ class UpcomingAdapter(
             }*/
             if (list.value!!.get(position).data.workout_status.equals("3")) {
                 binding.llStatus.visibility = View.VISIBLE
+                binding.tvDefault.visibility = View.GONE
                 binding.viewCircle.visibility = View.GONE
                 if (list.value!!.get(position).data.urc_updated_time != null) {
                     if (list.value!!.get(position).data.urc_updated_time > 0) {
@@ -87,17 +88,16 @@ class UpcomingAdapter(
                 } else {
                     binding.tvStatus.visibility = View.GONE
                 }
-            } else if (list.value!!.get(position).data.ongoing_workout.equals("1") && !list.value!!.get(position).data.workout_status.equals("1")
-            ) {
+            } else if (list.value!!.get(position).data.ongoing_workout.equals("1") && !list.value!!.get(position).data.workout_status.equals("1")) {
                 binding.llStatus.visibility = View.VISIBLE
+                binding.tvDefault.visibility = View.GONE
                 binding.viewCircle.visibility = View.GONE
                 binding.tvStatus.setText("Ongoing workout")
             } else {
                 binding.llStatus.visibility = View.GONE
+                binding.tvDefault.visibility = View.VISIBLE
                 binding.tvStatus.setText("")
             }
-
-
             binding.llScan.setOnClickListener {
                 fitpassHomeListener.onScanClick(list!!.value!!.get(position))
             }
@@ -108,14 +108,7 @@ class UpcomingAdapter(
                     Uri.parse(
                         "http://maps.google.com/maps?saddr=" + list.value!!.get(position).data.latitude + "," + list.value!!.get(
                             position
-                        ).data.longitude + "&daddr=" + FitpassPrefrenceUtil.getStringPrefs(
-                            context,
-                            FitpassPrefrenceUtil.LATITUDE,
-                            "0.0"
-                        ) + "," + FitpassPrefrenceUtil.getStringPrefs(
-                            context,
-                            FitpassPrefrenceUtil.LONGITUDE,
-                            "0.0"
+                        ).data.longitude + "&daddr=" + FitpassPrefrenceUtil.getStringPrefs(context, FitpassPrefrenceUtil.LATITUDE, "0.0") + "," + FitpassPrefrenceUtil.getStringPrefs(context, FitpassPrefrenceUtil.LONGITUDE, "0.0"
                         )
                     )
                 )

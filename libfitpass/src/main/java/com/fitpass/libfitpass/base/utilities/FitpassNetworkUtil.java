@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import com.fitpass.libfitpass.R;
 
 
-public class NetworkUtil {
+public class FitpassNetworkUtil {
     public static boolean checkInternetConnection(Context context) {
         try {
             ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -21,7 +21,7 @@ public class NetworkUtil {
                 return true;
 
             } else {
-                ToastUtil.showToastLong(context, context.getResources().getString(R.string.no_internet));
+                FitpassToastUtil.showToastLong(context, context.getResources().getString(R.string.no_internet));
                 return false;
             }
         } catch (Exception e) {
